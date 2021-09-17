@@ -29,7 +29,7 @@ echo "+ CMSSW_BASE  = $CMSSW_BASE"
 echo "+ PYTHON_PATH = $PYTHON_PATH"
 echo "+ PWD         = $PWD"
 echo "----- Found Proxy in: $X509_USER_PROXY"
-python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=$2
+python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://cmsxrootd.fnal.gov/$2
 echo "----- transfert output to eos :"
 xrdcp -s -f tree_$1.root {eosdir}
 echo "----- directory after running :"
@@ -58,7 +58,7 @@ def main():
     parser.add_argument("-i"   , "--input" , type=str, default="data.txt" , help="input datasets", required=True)
     parser.add_argument("-t"   , "--tag"   , type=str, default="IronMan"  , help="production tag", required=True)
     parser.add_argument("-isMC", "--isMC"  , type=int, default=1          , help="")
-    parser.add_argument("-q"   , "--queue" , type=str, default="testmatch", help="")
+    parser.add_argument("-q"   , "--queue" , type=str, default="tomorrow", help="")
     parser.add_argument("-e"   , "--era"   , type=str, default="2017"     , help="")
     parser.add_argument("-f"   , "--force" , action="store_true"          , help="recreate files and jobs")
     parser.add_argument("-s"   , "--submit", action="store_true"          , help="submit only")
@@ -72,7 +72,7 @@ def main():
     home_base  = os.environ['HOME']
     proxy_copy = os.path.join(home_base,proxy_base)
     cmssw_base = os.environ['CMSSW_BASE']
-    eosbase = "/eos/cms/store/group/phys_exotica/monoZ/{tag}/{sample}/"
+    eosbase = "/eos/cms/store/group/phys_higgs/HiggsExo/HH_bbZZ_bbllqq/test/{tag}/{sample}/"
 
     regenerate_proxy = False
     if not os.path.isfile(proxy_copy):
@@ -165,7 +165,9 @@ def main():
                     transfer_file= ",".join([
                         "../condor_Run2_proc.py",
                         "../combineHLT_Run2.yaml",
+                        "../../data/xsections_2016.yaml",
                         "../keep_and_drop.txt",
+                        "../keep_and_drop_post.txt",
                         "../Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt",
                         "../Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt",
                         "../Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt",
