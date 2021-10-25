@@ -52,7 +52,7 @@ class TriggerSFProducer(Module):
             l1_flavor = int(getattr(event,"leading_lep_flavor"))
         weight = 1
         weightError = 0
-        if lep_cat==3 or lep_cat==5 or lep_cat==7 : #these are MM. MML and MMLL lepton categories
+        if lep_cat==2:# or lep_cat==5 or lep_cat==7 : #these are MM. MML and MMLL lepton categories
 	    if l1_eta <= 1.5 and l2_eta <= 1.5:
 	    	hist = self.loadHisto(self.targetfile,"trgSFMMBB")
             elif l1_eta >= 1.5 and l2_eta <= 1.5:
@@ -61,7 +61,7 @@ class TriggerSFProducer(Module):
                 hist = self.loadHisto(self.targetfile,"trgSFMMBE")
             elif l1_eta >= 1.5 and l2_eta >= 1.5:
                 hist = self.loadHisto(self.targetfile,"trgSFMMEE")
-        elif lep_cat==1 or lep_cat==4 or lep_cat==6 : #these are EE. EEL and EELL lepton categories
+        elif lep_cat==1:# or lep_cat==4 or lep_cat==6 : #these are EE. EEL and EELL lepton categories
             if l1_eta <= 1.5 and l2_eta <= 1.5:
                 hist = self.loadHisto(self.targetfile,"trgSFEEBB")
             elif l1_eta >= 1.5 and l2_eta <= 1.5:
