@@ -37,7 +37,6 @@ ls -lR .
 echo " ------ THE END (everyone dies !) ----- "
 """
 
-
 condor_TEMPLATE = """
 request_disk          = 10000000
 executable            = {jobdir}/script.sh
@@ -119,15 +118,16 @@ def main():
             sample_name = sample.split("/")[1] if options.isMC else '_'.join(sample.split("/")[1:3])
             jobs_dir = '_'.join(['jobs', options.tag, sample_name])
             logging.info("-- sample_name : " + sample)
-
+ 
             if os.path.isdir(jobs_dir):
-                if not options.force:
-                    logging.error(" " + jobs_dir + " already exist !")
-                    continue
-                else:
-                    logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
-                    shutil.rmtree(jobs_dir)
-                    os.mkdir(jobs_dir)
+                if  "ext" not in sample.split("/")[2]:
+                    if not options.force:
+                        logging.error(" " + jobs_dir + " already exist !")
+                        continue
+                    else:
+                        logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
+                        shutil.rmtree(jobs_dir)
+                        os.mkdir(jobs_dir)
             else:
                 os.mkdir(jobs_dir)
 
