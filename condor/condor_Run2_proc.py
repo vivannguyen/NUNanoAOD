@@ -32,7 +32,7 @@ parser = argparse.ArgumentParser("")
 parser.add_argument('-isMC'   , '--isMC'   , type=int, default=1     , help="")
 parser.add_argument('-jobNum' , '--jobNum' , type=int, default=1     , help="")
 parser.add_argument('-era'    , '--era'    , type=str, default="2018", help="")
-parser.add_argument('-doSyst' , '--doSyst' , type=int, default=1     , help="")
+parser.add_argument('-doSyst' , '--doSyst' , type=int, default=0     , help="")
 parser.add_argument('-infile' , '--infile' , type=str, default=None  , help="")
 parser.add_argument('-dataset', '--dataset', type=str, default="X"   , help="")
 parser.add_argument('-nevt'   , '--nevt'   , type=str, default=-1    , help="")
@@ -109,7 +109,9 @@ dataset = options.dataset
 #condtag_ = "SUEP_QCD"
 
 if options.isMC:
+   #for running locally
    #with open(os.path.dirname(__file__) +'../data/xsections_{}.yaml'.format(options.era)) as file:
+   #for running on condor
    with open(os.path.dirname(__file__) +'xsections_{}.yaml'.format(options.era)) as file:
        #MC_xsecs = yaml.full_load(file)
        MC_xsecs = yaml.safe_load(file)
@@ -136,11 +138,9 @@ if float(options.nevt) > 0:
 #]
 
 if "QCD" in dataset:
-    modules_era = [ GenWeightProducer( isMC = options.isMC, xsec = xsection, dopdf =  False) ]
+    modules_era = [ GenWeightProducer( isMC = options.isMC, xsec = xsection, dopdf =  False, do_xsecscale = True) ]
 else:
-    modules_era = [ GenWeightProducer( isMC = options.isMC, xsec = xsection, dopdf =  True) ]
-
-# modules_era = [ GenWeightProducer( isMC = options.isMC, xsec = xsection, dopdf =  True) ]
+    modules_era = [ GenWeightProducer( isMC = options.isMC, xsec = xsection, dopdf =  True, do_xsecscale = True) ]
 
 pro_syst = [ "ElectronEn", "MuonEn", "jesTotal", "jer"]
 ext_syst = [ "puWeight", "PDF", "MuonSF", "ElecronSF", "EWK", "nvtxWeight","TriggerSFWeight","btagEventWeight", "QCDScale0w", "QCDScale1w", "QCDScale2w"]

@@ -39,6 +39,7 @@ class HHProducer(Module):
         self.out.branch("ngood_leptons{}".format(self.syst_suffix), "I")
         self.out.branch("nextra_leptons{}".format(self.syst_suffix), "I")
         self.out.branch("lep_category{}".format(self.syst_suffix), "I")
+        self.out.branch("bad_lep_category{}".format(self.syst_suffix), "I")
 
         self.out.branch("leading_Hbb_pt{}".format(self.syst_suffix), "F")
         self.out.branch("leading_Hbb_eta{}".format(self.syst_suffix), "F")
@@ -79,6 +80,21 @@ class HHProducer(Module):
         self.out.branch("Zlep_cand_eta{}".format(self.syst_suffix), "F")
         self.out.branch("Zlep_cand_phi{}".format(self.syst_suffix), "F")
         self.out.branch("Zlep_cand_mass{}".format(self.syst_suffix), "F")
+
+        self.out.branch("Zlep_cand_SS_iso_pt{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_SS_iso_eta{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_SS_iso_phi{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_SS_iso_mass{}".format(self.syst_suffix), "F")
+
+        self.out.branch("Zlep_cand_OS_inviso_pt{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_OS_inviso_eta{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_OS_inviso_phi{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_OS_inviso_mass{}".format(self.syst_suffix), "F")
+
+        self.out.branch("Zlep_cand_SS_inviso_pt{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_SS_inviso_eta{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_SS_inviso_phi{}".format(self.syst_suffix), "F")
+        self.out.branch("Zlep_cand_SS_inviso_mass{}".format(self.syst_suffix), "F")
 
         self.out.branch("Zjet_cand_pt{}".format(self.syst_suffix), "F")
         self.out.branch("Zjet_cand_eta{}".format(self.syst_suffix), "F")
@@ -360,6 +376,7 @@ class HHProducer(Module):
         good_leptons = []
         good_muons = []
         good_electrons = []
+        bad_muons = []
 
 	muons.sort(key=lambda muon: muon.pt, reverse=True)
         electrons.sort(key=lambda el: el.pt, reverse=True)
@@ -368,9 +385,12 @@ class HHProducer(Module):
             isoLep   = mu.miniPFRelIso_all
             pass_ips = abs(mu.dxy) < 0.02 and abs(mu.dz) < 0.1
             pass_fid = abs(mu.eta) < 2.4 and mu.pt >= (20 if idx==0 else 10)
-            pass_ids = mu.mediumId and isoLep <= 0.1
-            if pass_fid and pass_ids and pass_ips:
+            pass_ids = mu.mediumId #and isoLep <= 0.1
+            if pass_fid and pass_ids and pass_ips and isoLep<=0.1:
                 good_muons.append(mu)
+            elif pass_fid and pass_ids and pass_ips and isoLep>0.1:
+                bad_muons.append(mu)
+            
         for idy,el in enumerate(electrons):
             id_CB = el.cutBased
             # changing to MVA based ID :
@@ -379,28 +399,17 @@ class HHProducer(Module):
 
         # let sort the muons in pt
         good_muons.sort(key=lambda x: x.pt, reverse=True)
+        bad_muons.sort(key=lambda x: x.pt, reverse=True)
         good_electrons.sort(key=lambda x: x.pt, reverse=True)
-
-        # Find any remaining e/mu that pass looser selection
-        extra_leptons = []
-        for mu in muons:
-            isoLep   = mu.miniPFRelIso_all
-            pass_ids = mu.softId and isoLep <= 0.4
-            pass_fid = abs(mu.eta) < 2.4 and mu.pt >= 10
-            if tk.closest(mu, good_muons)[1] < 0.01:
-                continue
-            if pass_fid and pass_ids:
-                extra_leptons.append(mu)
-
-        for el in electrons:
-            pass_fid = abs(el.eta) < 2.5 and el.pt >= 10
-            if tk.closest(el, good_electrons)[1] < 0.01:
-                continue
-            if pass_fid and self.electron_id(el, "WPL"):
-                extra_leptons.append(el)
 
         good_leptons = good_electrons + good_muons
         good_leptons.sort(key=lambda x: x.pt, reverse=True)
+
+        bad_leptons = bad_muons
+        bad_leptons.sort(key=lambda x: x.pt, reverse=True)
+
+        leptons = good_leptons + bad_leptons
+        leptons.sort(key=lambda x: x.pt, reverse=True)
 
         _lead_lep_pt = good_leptons[0].pt if len(good_leptons) else 0.0
         _lead_lep_eta = good_leptons[0].eta if len(good_leptons) else 0.0
@@ -419,7 +428,7 @@ class HHProducer(Module):
         self.out.fillBranch("leading_lep_flavor{}".format(self.syst_suffix),_leading_lep_flavor)
 
         ngood_leptons = len(good_leptons)
-        nextra_leptons = len(extra_leptons)
+        nbad_leptons = len(bad_leptons)
 
         if False:
             print "number of leptons [all, good, extra]: ", ngood_leptons, " : ", nextra_leptons
@@ -427,6 +436,7 @@ class HHProducer(Module):
             print "        WP90 electrons : ", [e.mvaFall17Iso_WP90 for e in good_electrons]
             print "             muons     : ", [e.tightId for e in good_muons]
             print "        lepton pts     : ", [e.pt for e in good_leptons]
+
         if ngood_leptons == 2:
             # constructing the signal region
             if (good_leptons[0].pdgId * good_leptons[1].pdgId) == -11*11:
@@ -444,9 +454,26 @@ class HHProducer(Module):
         else:
             lep_category = 7 #any other amount of leptons
             
+        if len(good_leptons) <= 1 and (len(good_leptons) + len(bad_leptons)) == 2:
+            # constructing the non iso lepton region
+            if (leptons[0].pdgId * leptons[1].pdgId) == -11*11:
+                bad_lep_category = 8 # EE category
+            if (leptons[0].pdgId * leptons[1].pdgId) == -13*13:
+                bad_lep_category = 9 # MM category
+            if (leptons[0].pdgId * leptons[1].pdgId) == -11*13:
+                bad_lep_category = 10 # EM category
+            if (leptons[0].pdgId * leptons[1].pdgId) == 121:
+                bad_lep_category = 11 # EE SS category 
+            if (leptons[0].pdgId * leptons[1].pdgId) == 169:
+                bad_lep_category = 12 # MM SS category
+            if (leptons[0].pdgId * leptons[1].pdgId) == 11*13:
+                bad_lep_category = 13 # EM SS category
+        else:
+            bad_lep_category = 14 #any other amount of leptons
+        
         self.out.fillBranch("ngood_leptons{}".format(self.syst_suffix), ngood_leptons)
-        self.out.fillBranch("nextra_leptons{}".format(self.syst_suffix), nextra_leptons)
         self.out.fillBranch("lep_category{}".format(self.syst_suffix), lep_category)
+        self.out.fillBranch("bad_lep_category{}".format(self.syst_suffix), bad_lep_category)
 
         # Leptons efficiency/Trigger/Isolation Scale factors
         # These are applied only of the first 2 leading leptons
@@ -506,6 +533,9 @@ class HHProducer(Module):
         HiggsZZ_cand_p4 = ROOT.TLorentzVector()
 	HiggsZjet_cand_p4 = ROOT.TLorentzVector()
 	HiggsZlep_cand_p4 = ROOT.TLorentzVector()
+        HiggsZlep_cand_p4_SS_iso = ROOT.TLorentzVector()
+        HiggsZlep_cand_p4_OS_inviso = ROOT.TLorentzVector()
+        HiggsZlep_cand_p4_SS_inviso = ROOT.TLorentzVector()
         Higgs_cand_0 = ROOT.TLorentzVector()
         Zjet_cand_0 = ROOT.TLorentzVector()
         Zlep_cand_0 = ROOT.TLorentzVector()
@@ -518,23 +548,15 @@ class HHProducer(Module):
         if len(good_bjets) >= 2:
            Higgsbb_cand_p4 = good_bjets[0].p4() + good_bjets[1].p4() 
            Higgsbb_candidate = good_bjets[:2]
-           #  for Hpair in itertools.combinations(good_bjets, 2):
-           #     Higgs_cand_0 = Hpair[0].p4() + Hpair[1].p4()
 
-           #     if abs(Higgs_cand_0.M()-self.Hmass) < abs(Higgsbb_cand_p4.M()-self.Hmass) or Higgsbb_cand_p4.M()==0.0:
-           #             Higgsbb_cand_p4 = Higgs_cand_0
-           #             Higgsbb_candidate = Hpair
         #We also look at the case where there are less than 2 b-tagged jets. Form a temp collection of the b-tagged jet and the other jets. 
         elif len(good_bjets) == 1:
-            #temp_jets = good_jets
-            #temp_jets = []
-            #temp_jets.append(good_bjets[0])
-            #temp_jets.extend(good_jets)
             for jet in good_jets:
                 Higgs_cand_0 = good_bjets[0].p4() + jet.p4()
                 if abs(Higgs_cand_0.M()-self.Hmass) < abs(Higgsbb_cand_p4.M()-self.Hmass) or Higgsbb_cand_p4.M()==0.0:
                         Higgsbb_cand_p4 = Higgs_cand_0
                         Higgsbb_candidate = [good_bjets[0],jet]
+
         #The final case where we sadly have no b-tagged jets:(
         else:
             for Hpair in itertools.combinations(good_jets, 2):
@@ -543,6 +565,7 @@ class HHProducer(Module):
                 if abs(Higgs_cand_0.M()-self.Hmass) < abs(Higgsbb_cand_p4.M()-self.Hmass) or Higgsbb_cand_p4.M()==0.0:
                         Higgsbb_cand_p4 = Higgs_cand_0
                         Higgsbb_candidate = Hpair
+
         #now we remove the jets that we already used from the collection so we dont use them twice
         if len(good_jets) >= 2:
             for jet in good_jets:
@@ -556,8 +579,7 @@ class HHProducer(Module):
                 Zjet_cand_0 = Zjetpair[0].p4() + Zjetpair[1].p4()
 
                 for Zleppair in itertools.combinations(good_leptons, 2):#The possible lepton combinations for the Z boson
-                    if lep_category > 2: continue#ensuring OSSF via the lep_category above
-                    #if (Zleppair[0].pdgId * Zleppair[1].pdgId) not in [-169, -121]: continue#ensuring OSSF
+                    if lep_category not in [1,2]: continue#ensuring OSSF via the lep_category above
                     Zlep_cand_0 = Zleppair[0].p4() + Zleppair[1].p4()
 
                     Higgs_cand_1 = Zjet_cand_0 + Zlep_cand_0
@@ -567,6 +589,35 @@ class HHProducer(Module):
 			    HiggsZlep_cand_p4 = Zlep_cand_0
                             HiggsZjet_candidate = Zjetpair
                             HiggsZlep_candidate = Zleppair
+
+                for Zleppair in itertools.combinations(good_leptons, 2):#The possible lepton combinations for the Z boson
+                    if lep_category != 5: continue#ensuring OSSF via the lep_category above
+                    Zlep_cand_0 = Zleppair[0].p4() + Zleppair[1].p4()
+
+                    Higgs_cand_1 = Zjet_cand_0 + Zlep_cand_0
+                    if abs(Higgs_cand_1.M()-self.Hmass) < abs(HiggsZZ_cand_p4.M()-self.Hmass) or HiggsZZ_cand_p4.M()==0.0:
+                            HiggsZlep_cand_p4_SS_iso = Zlep_cand_0
+
+        #For Non Isolated Muons same as above
+        if len(good_jets) >= 2 and len(good_muons) <= 1 and (len(good_muons) + len(bad_muons) == 2):
+            for Zjetpair in itertools.combinations(good_jets, 2):#The possible Jet combinations for the Z boson
+                Zjet_cand_0 = Zjetpair[0].p4() + Zjetpair[1].p4()
+
+                for Zleppair in itertools.combinations(leptons, 2):#The possible lepton combinations for the Z boson
+                    if bad_lep_category != 9: continue#ensuring OSSF via the lep_category above
+                    Zlep_cand_0 = Zleppair[0].p4() + Zleppair[1].p4()
+
+                    Higgs_cand_1 = Zjet_cand_0 + Zlep_cand_0
+                    if abs(Higgs_cand_1.M()-self.Hmass) < abs(HiggsZZ_cand_p4.M()-self.Hmass) or HiggsZZ_cand_p4.M()==0.0:
+                            HiggsZlep_cand_p4_OS_inviso = Zlep_cand_0
+                       
+                for Zleppair in itertools.combinations(leptons, 2):#The possible lepton combinations for the Z boson
+                    if bad_lep_category != 12: continue#ensuring OSSF via the lep_category above
+                    Zlep_cand_0 = Zleppair[0].p4() + Zleppair[1].p4()
+
+                    Higgs_cand_1 = Zjet_cand_0 + Zlep_cand_0
+                    if abs(Higgs_cand_1.M()-self.Hmass) < abs(HiggsZZ_cand_p4.M()-self.Hmass) or HiggsZZ_cand_p4.M()==0.0:
+                            HiggsZlep_cand_p4_SS_inviso = Zlep_cand_0
 
         self.out.fillBranch("Higgsbb_cand_pt{}".format(self.syst_suffix), Higgsbb_cand_p4.Pt())
         self.out.fillBranch("Higgsbb_cand_eta{}".format(self.syst_suffix), Higgsbb_cand_p4.Eta())
@@ -582,6 +633,21 @@ class HHProducer(Module):
         self.out.fillBranch("Zlep_cand_eta{}".format(self.syst_suffix), HiggsZlep_cand_p4.Eta())
         self.out.fillBranch("Zlep_cand_phi{}".format(self.syst_suffix), HiggsZlep_cand_p4.Phi())
         self.out.fillBranch("Zlep_cand_mass{}".format(self.syst_suffix), HiggsZlep_cand_p4.M())
+
+        self.out.fillBranch("Zlep_cand_SS_iso_pt{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_iso.Pt())
+        self.out.fillBranch("Zlep_cand_SS_iso_eta{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_iso.Eta())
+        self.out.fillBranch("Zlep_cand_SS_iso_phi{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_iso.Phi())
+        self.out.fillBranch("Zlep_cand_SS_iso_mass{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_iso.M())
+
+        self.out.fillBranch("Zlep_cand_OS_inviso_pt{}".format(self.syst_suffix), HiggsZlep_cand_p4_OS_inviso.Pt())
+        self.out.fillBranch("Zlep_cand_OS_inviso_eta{}".format(self.syst_suffix), HiggsZlep_cand_p4_OS_inviso.Eta())
+        self.out.fillBranch("Zlep_cand_OS_inviso_phi{}".format(self.syst_suffix), HiggsZlep_cand_p4_OS_inviso.Phi())
+        self.out.fillBranch("Zlep_cand_OS_inviso_mass{}".format(self.syst_suffix), HiggsZlep_cand_p4_OS_inviso.M())
+
+        self.out.fillBranch("Zlep_cand_SS_inviso_pt{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_inviso.Pt())
+        self.out.fillBranch("Zlep_cand_SS_inviso_eta{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_inviso.Eta())
+        self.out.fillBranch("Zlep_cand_SS_inviso_phi{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_inviso.Phi())
+        self.out.fillBranch("Zlep_cand_SS_inviso_mass{}".format(self.syst_suffix), HiggsZlep_cand_p4_SS_inviso.M())
 
         self.out.fillBranch("Zjet_cand_pt{}".format(self.syst_suffix), HiggsZjet_cand_p4.Pt())
         self.out.fillBranch("Zjet_cand_eta{}".format(self.syst_suffix), HiggsZjet_cand_p4.Eta())
@@ -786,7 +852,7 @@ class HHProducer(Module):
 
         # Let remove the negative categories with no obvious meaning meaning
         # This will reduce the size of most of the background and data
-	if (len(good_leptons) > 1 and len(good_jets) > 1):
+	if (len(good_jets) > 1):
             return True
         else:
             return False
