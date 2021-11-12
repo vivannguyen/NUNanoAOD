@@ -43,16 +43,14 @@ class TriggerSFProducer(Module):
             l1_eta = 0
             l2_pt = 0
             l2_eta = 0
-            l1_flavor = 0
         else:
             l1_pt = float(getattr(event,"leading_lep_pt"))
             l1_eta = abs(float(getattr(event,"leading_lep_eta")))
             l2_pt = float(getattr(event,"trailing_lep_pt"))
             l2_eta = abs(float(getattr(event,"trailing_lep_eta")))
-            l1_flavor = int(getattr(event,"leading_lep_flavor"))
         weight = 1
         weightError = 0
-        if lep_cat==2:# or lep_cat==5 or lep_cat==7 : #these are MM. MML and MMLL lepton categories
+        if lep_cat==1:# or lep_cat==5 or lep_cat==7 : #these are MM. MML and MMLL lepton categories
 	    if l1_eta <= 1.5 and l2_eta <= 1.5:
 	    	hist = self.loadHisto(self.targetfile,"trgSFMMBB")
             elif l1_eta >= 1.5 and l2_eta <= 1.5:
@@ -61,7 +59,7 @@ class TriggerSFProducer(Module):
                 hist = self.loadHisto(self.targetfile,"trgSFMMBE")
             elif l1_eta >= 1.5 and l2_eta >= 1.5:
                 hist = self.loadHisto(self.targetfile,"trgSFMMEE")
-        elif lep_cat==1:# or lep_cat==4 or lep_cat==6 : #these are EE. EEL and EELL lepton categories
+        elif lep_cat==2:# or lep_cat==4 or lep_cat==6 : #these are EE. EEL and EELL lepton categories
             if l1_eta <= 1.5 and l2_eta <= 1.5:
                 hist = self.loadHisto(self.targetfile,"trgSFEEBB")
             elif l1_eta >= 1.5 and l2_eta <= 1.5:
@@ -70,25 +68,6 @@ class TriggerSFProducer(Module):
                 hist = self.loadHisto(self.targetfile,"trgSFEEBE")
             elif l1_eta >= 1.5 and l2_eta >= 1.5:
                 hist = self.loadHisto(self.targetfile,"trgSFEEEE")
-        else : #This is the EM and ME categories
-	    if l1_flavor == 1: #This is the muon leading
-            	if l1_eta <= 1.5 and l2_eta <= 1.5:
-            	    hist = self.loadHisto(self.targetfile,"trgSFMEBB")
-            	elif l1_eta >= 1.5 and l2_eta <= 1.5:
-            	    hist = self.loadHisto(self.targetfile,"trgSFMEEB")
-            	elif l1_eta <= 1.5 and l2_eta >= 1.5:
-            	    hist = self.loadHisto(self.targetfile,"trgSFMEBE")
-            	elif l1_eta >= 1.5 and l2_eta >= 1.5:
-            	    hist = self.loadHisto(self.targetfile,"trgSFMEEE")
-            elif l1_flavor == 0: #This is the electron leading
-                if l1_eta <= 1.5 and l2_eta <= 1.5:
-                    hist = self.loadHisto(self.targetfile,"trgSFEMBB")
-                elif l1_eta >= 1.5 and l2_eta <= 1.5:
-                    hist = self.loadHisto(self.targetfile,"trgSFEMEB")
-                elif l1_eta <= 1.5 and l2_eta >= 1.5:
-                    hist = self.loadHisto(self.targetfile,"trgSFEMBE")
-                elif l1_eta >= 1.5 and l2_eta >= 1.5:
-                    hist = self.loadHisto(self.targetfile,"trgSFEMEE")
         nxBins = 7
 	nyBins = 7
 	searchbinx = -1

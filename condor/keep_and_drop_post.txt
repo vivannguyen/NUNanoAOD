@@ -31,7 +31,7 @@ drop Jet_btag*
 drop HLT*
 drop Fsr*
 drop Raw*
-drop Trig*
+drop *TrigObj*
 drop PV*
 drop SV*
 drop Flag*
