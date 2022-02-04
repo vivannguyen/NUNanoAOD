@@ -162,6 +162,18 @@ TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8:
     br: 1
     kr: 1
     xsec: 731.9
+TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8:
+    br: 1
+    kr: 1
+    xsec: 88.3419
+TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8:
+    br: 1
+    kr: 1
+    xsec: 377.96
+TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8:
+    br: 1
+    kr: 1
+    xsec: 365.34
 WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
     br: 1
     kr: 1
@@ -242,7 +254,7 @@ TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8:
     br: 1
     kr: 1
     xsec: 0.5104
-GluGluToRadionToHHTo2B2ZTo2L2J_M-250_narrow_13TeV-madgraph_correctedcfg::
+GluGluToRadionToHHTo2B2ZTo2L2J_M-250_narrow_13TeV-madgraph_correctedcfg:
     br: 1
     kr: 1
     xsec: 1
@@ -250,19 +262,19 @@ GluGluToRadionToHHTo2B2ZTo2L2J_M-260_narrow_13TeV-madgraph_correctedcfg:
     br: 1
     kr: 1
     xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-270_narrow_13TeV-madgraph_correctedcfg::
+GluGluToRadionToHHTo2B2ZTo2L2J_M-270_narrow_13TeV-madgraph_correctedcfg:
     br: 1
     kr: 1
     xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-280_narrow_13TeV-madgraph_correctedcfg::
+GluGluToRadionToHHTo2B2ZTo2L2J_M-280_narrow_13TeV-madgraph_correctedcfg:
     br: 1
     kr: 1
     xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-300_narrow_13TeV-madgraph_correctedcfg::
+GluGluToRadionToHHTo2B2ZTo2L2J_M-300_narrow_13TeV-madgraph_correctedcfg:
     br: 1
     kr: 1
     xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-320_narrow_13TeV-madgraph_correctedcfg::
+GluGluToRadionToHHTo2B2ZTo2L2J_M-320_narrow_13TeV-madgraph_correctedcfg:
     br: 1
     kr: 1
     xsec: 1

@@ -14,7 +14,6 @@
 /DoubleMuon/Run2016G-02Apr2020-v1/NANOAOD
 /DoubleMuon/Run2016H-02Apr2020-v1/NANOAOD
 
-/SingleElectron/Run2016B-02Apr2020_ver1-v1/NANOAOD
 /SingleElectron/Run2016B-02Apr2020_ver2-v1/NANOAOD
 /SingleElectron/Run2016C-02Apr2020-v1/NANOAOD
 /SingleElectron/Run2016D-02Apr2020-v1/NANOAOD
@@ -23,7 +22,6 @@
 /SingleElectron/Run2016G-02Apr2020-v1/NANOAOD
 /SingleElectron/Run2016H-02Apr2020-v1/NANOAOD
 
-/SingleMuon/Run2016B-02Apr2020_ver1-v1/NANOAOD
 /SingleMuon/Run2016B-02Apr2020_ver2-v1/NANOAOD
 /SingleMuon/Run2016C-02Apr2020-v1/NANOAOD
 /SingleMuon/Run2016D-02Apr2020-v1/NANOAOD
