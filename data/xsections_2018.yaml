@@ -162,6 +162,18 @@ TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8:
     br: 1
     kr: 1
     xsec: 731.9
+TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8:
+    br: 1
+    kr: 1
+    xsec: 88.3419
+TTToHadronic_TuneCP5_13TeV-powheg-pythia8:
+    br: 1
+    kr: 1
+    xsec: 377.96
+TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8:
+    br: 1
+    kr: 1
+    xsec: 365.34
 WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
     br: 1
     kr: 1
@@ -483,6 +495,10 @@ VBFHHTo2B2ZTo2L2J_CV_1_C2V_1_C3_1_dipoleRecoilOn-TuneCP5_PSweights_13TeV-madgrap
     kr: 1
     xsec: 1
 VBFHHTo2B2ZTo2L2J_CV_1_C2V_2_C3_1_dipoleRecoilOn-TuneCP5_PSweights_13TeV-madgraph-pythia8:
+    br: 1
+    kr: 1
+    xsec: 1
+VBFHHTo2B2ZTo2L2J_CV_1_C2V_2_C3_1_dipoleRecoilOff-TuneCP5_PSweights_13TeV-madgraph-pythia8:
     br: 1
     kr: 1
     xsec: 1
