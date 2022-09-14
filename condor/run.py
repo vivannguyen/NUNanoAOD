@@ -10,7 +10,6 @@ from termcolor import colored
 logging.basicConfig(level=logging.DEBUG)
 
 script_TEMPLATE = """#!/bin/bash
-source /cvmfs/grid.desy.de/etc/profile.d/grid-ui-env.sh
 export X509_USER_PROXY={proxy}
 voms-proxy-info -all
 source /cvmfs/cms.cern.ch/cmsset_default.sh
@@ -57,9 +56,9 @@ should_transfer_files   = Yes
 # 6h
 #+RequestRuntime     = 21600
 # 12h
-+RequestRuntime     = 43200
+#+RequestRuntime     = 43200
 # 30h
-#+RequestRuntime     = 108000
++RequestRuntime     = 108000
 # 24 h
 #+RequestRuntime     = 86400
 
