@@ -10,8 +10,9 @@ from termcolor import colored
 logging.basicConfig(level=logging.DEBUG)
 
 script_TEMPLATE = """#!/bin/bash
-
+source /cvmfs/grid.desy.de/etc/profile.d/grid-ui-env.sh
 export X509_USER_PROXY={proxy}
+voms-proxy-info -all
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 export SCRAM_ARCH=slc6_amd64_gcc630
 
@@ -29,7 +30,7 @@ echo "+ CMSSW_BASE  = $CMSSW_BASE"
 echo "+ PYTHON_PATH = $PYTHON_PATH"
 echo "+ PWD         = $PWD"
 echo "----- Found Proxy in: $X509_USER_PROXY"
-python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://cmsxrootd.fnal.gov/$2
+python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=$2
 echo "----- transfert output to eos :"
 xrdcp -s -f tree_$1.root {eosdir}
 echo "----- directory after running :"
@@ -47,7 +48,20 @@ error                 = $(ClusterId).$(ProcId).err
 log                   = $(ClusterId).$(ProcId).log
 initialdir            = {jobdir}
 transfer_output_files = ""
+should_transfer_files   = Yes
 +JobFlavour           = "{queue}"
+# 1h
+#+RequestRuntime     = 3600
+# 168h=7days
+#+RequestRuntime     = 604800
+# 6h
+#+RequestRuntime     = 21600
+# 12h
++RequestRuntime     = 43200
+# 30h
+#+RequestRuntime     = 108000
+# 24 h
+#+RequestRuntime     = 86400
 
 queue jobid from {jobdir}/inputfiles.dat
 """
@@ -71,7 +85,9 @@ def main():
     home_base  = os.environ['HOME']
     proxy_copy = os.path.join(home_base,proxy_base)
     cmssw_base = os.environ['CMSSW_BASE']
-    eosbase = "/eos/cms/store/group/phys_higgs/HiggsExo/HH_bbZZ_bbllqq/test/{tag}/{sample}/"
+    eosbase = "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/output/{tag}/{sample}/"
+
+    print proxy_copy
 
     regenerate_proxy = False
     if not os.path.isfile(proxy_copy):
@@ -92,7 +108,7 @@ def main():
     if regenerate_proxy:
         redone_proxy = False
         while not redone_proxy:
-            status = os.system('voms-proxy-init -voms cms')
+            status = os.system('voms-proxy-init -voms cms --valid 168:00')
             if os.WEXITSTATUS(status) == 0:
                 redone_proxy = True
         shutil.copyfile('/tmp/'+proxy_base,  proxy_copy)
@@ -120,14 +136,21 @@ def main():
             logging.info("-- sample_name : " + sample)
  
             if os.path.isdir(jobs_dir):
+#                if not options.force:
+#                    logging.error(" " + jobs_dir + " already exist !")
+#                    continue
+#                else:
+#                    logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
+#                    shutil.rmtree(jobs_dir)
+#                    os.mkdir(jobs_dir)
                 if  "ext" not in sample.split("/")[2]:
-                    if not options.force:
-                        logging.error(" " + jobs_dir + " already exist !")
-                        continue
-                    else:
-                        logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
-                        shutil.rmtree(jobs_dir)
-                        os.mkdir(jobs_dir)
+                     if not options.force:
+                         logging.error(" " + jobs_dir + " already exist !")
+                         continue
+                     else:
+                         logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
+                         shutil.rmtree(jobs_dir)
+                         os.mkdir(jobs_dir)
             else:
                 os.mkdir(jobs_dir)
 
@@ -147,7 +170,8 @@ def main():
                 eosoutdir = eosoutdir.replace('/eos/cms', 'root://eoscms.cern.ch/')
                 os.system("eos mkdir -p {}".format(eosoutdir.replace('root://eoscms.cern.ch/','')))
             else:
-                raise NameError(eosoutdir)
+                os.system("mkdir -p {}".format(eosoutdir))
+#                raise NameError(eosoutdir)
 
             with open(os.path.join(jobs_dir, "script.sh"), "w") as scriptfile:
                 script = script_TEMPLATE.format(
@@ -159,19 +183,22 @@ def main():
                 )
                 scriptfile.write(script)
                 scriptfile.close()
+            os.system("chmod +x {}".format(os.path.join(jobs_dir, "script.sh")))
 
             with open(os.path.join(jobs_dir, "condor.sub"), "w") as condorfile:
                 condor = condor_TEMPLATE.format(
                     transfer_file= ",".join([
-                        "../condor_Run2_proc.py",
-                        "../combineHLT_Run2.yaml",
-                        "../../data/xsections_2016.yaml",
-                        "../keep_and_drop.txt",
-                        "../keep_and_drop_post.txt",
-                        "../Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt",
-                        "../Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt",
-                        "../Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt",
-                        "../haddnano.py"
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/condor_Run2_proc.py",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/combineHLT_Run2.yaml",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/data/xsections_2016.yaml",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/data/xsections_2017.yaml",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/data/xsections_2018.yaml",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/keep_and_drop.txt",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/keep_and_drop_post.txt",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt",
+                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/haddnano.py"
                     ]),
                     jobdir=jobs_dir,
                     queue=options.queue

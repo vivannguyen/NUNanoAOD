@@ -42,3 +42,20 @@ python run.py --isMC=0 --era=2016 --tag=[tagname] --input=../data/list_2016_Data
 
 
 ```
+
+## EFT reweighting
+Code is based on framework from dihiggs group. 
+```
+https://gitlab.cern.ch/jlidrych/eftinterfaceforhhtobbzzllqq
+```
+### Electron scale factor
+Tools provided by CMS EGamma POG
+```
+https://github.com/jlidrych/egm_tnp_analysis
+```
+### Muon scale factor
+Tools provided by CMS Muon POG
+```
+https://gitlab.cern.ch/cms-muonPOG/spark_tnp
+```
+

@@ -18,9 +18,8 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.common.PrefireCorr import 
 #Import the MonoZ analysis tools
 #from PhysicsTools.MonoZ.MonoZProducer import *
 #from PhysicsTools.MonoZ.HHProducer import *
-from PhysicsTools.MonoZ.DiHiggsProducer import *
+from PhysicsTools.MonoZ.ScaleFactorProducer import *
 from PhysicsTools.MonoZ.GenWeightProducer import *
-from PhysicsTools.MonoZ.GenTopProducer import *
 #from PhysicsTools.MonoZ.EWProducer import *
 #from PhysicsTools.MonoZ.ADDProducer import *
 #from PhysicsTools.MonoZ.NvtxPUreweight import *
@@ -28,7 +27,6 @@ from PhysicsTools.MonoZ.PhiXYCorrection import *
 from PhysicsTools.MonoZ.BtagEventWeightProducer import *
 from PhysicsTools.MonoZ.TriggerSFProducerForHH import *
 from PhysicsTools.MonoZ.AngularVariablesProducerForHH import *
-from PhysicsTools.MonoZ.BDTdiscriminantProducerForHH import *
 #from PhysicsTools.MonoZ.GenMonoZProducer import *
 import argparse
 
@@ -36,12 +34,12 @@ parser = argparse.ArgumentParser("")
 parser.add_argument('-isMC'   , '--isMC'   , type=int, default=1     , help="")
 parser.add_argument('-jobNum' , '--jobNum' , type=int, default=1     , help="")
 parser.add_argument('-era'    , '--era'    , type=str, default="2018", help="")
-parser.add_argument('-doSyst' , '--doSyst' , type=int, default=1     , help="")
+parser.add_argument('-doSyst' , '--doSyst' , type=int, default=0     , help="")
 parser.add_argument('-infile' , '--infile' , type=str, default=None  , help="")
 parser.add_argument('-dataset', '--dataset', type=str, default="X"   , help="")
 parser.add_argument('-nevt'   , '--nevt'   , type=str, default=-1    , help="")
 parser.add_argument('-json'   , '--json'   , type=str, default=None  , help="")
-
+parser.add_argument('-period' , '--period' , type=str, default="Run2016B"  , help="")
 options  = parser.parse_args()
 
 def inputfile(nanofile):
@@ -50,6 +48,7 @@ def inputfile(nanofile):
    pfn=os.popen("edmFileUtil -d %s"%(nanofile)).read()
    pfn=re.sub("\n","",pfn)
    print nanofile," -> ",pfn
+
    if (os.getenv("GLIDECLIENT_Group","") != "overflow" and
        os.getenv("GLIDECLIENT_Group","") != "overflow_conservative" and not
        forceaaa ):
@@ -61,21 +60,21 @@ def inputfile(nanofile):
             nanofile=pfn
             testfile.Close()
          else:
+            print 'pozor'
             if "root://cms-xrd-global.cern.ch/" not in nanofile:
                nanofile = "root://cms-xrd-global.cern.ch/" + nanofile
             forceaaa=True
       else:
-         nanofile = pfn
+         print 'nothing'
+ #        nanofile = pfn
    else:
 #      print 'nic'
        if "root://cms-xrd-global.cern.ch/" not in nanofile:
           nanofile = "root://cms-xrd-global.cern.ch/" + nanofile
+   print 'final file is: ',nanofile
    return nanofile
 
 options.infile = inputfile(options.infile)
-
-# Use EE noise mitigation for 2017
-metBranchName = "METFixEE2017" if options.era=="2017" else "MET"
 
 print "---------------------------"
 print " -- options  = ", options
@@ -84,7 +83,6 @@ print " -- jobNum   = ", options.jobNum
 print " -- era      = ", options.era
 print " -- in file  = ", options.infile
 print " -- dataset  = ", options.dataset
-print " -- MET      = ", metBranchName
 print "---------------------------"
 
 xsection = 1.0
@@ -131,7 +129,7 @@ if options.isMC:
    except:
        print("WARNING: I did not find the xsection for that MC sample. Check the dataset name and the relevant yaml file")
 
-pre_selection = "(Sum$(Electron_pt>10 && abs(Electron_eta)<2.5) >= 2 || Sum$(Muon_pt>8 && abs(Muon_eta)<2.5) >= 2 ) && Sum$(Jet_pt>15 && abs(Jet_eta) < 2.4 )>= 4 "
+pre_selection = "(Sum$(Electron_pt>8 && abs(Electron_eta)<2.5) >= 2 || Sum$(Muon_pt>8 && abs(Muon_eta)<2.5) >= 2 ) "
 pre_selection += "&& Flag_METFilters"
 
 if float(options.nevt) > 0:
@@ -152,88 +150,54 @@ else:
 
 # modules_era = [ GenWeightProducer( isMC = options.isMC, xsec = xsection, dopdf =  True) ]
 
-pro_syst = [ "ElectronEn", "MuonEn", "jer"]
-ext_syst = [ "puWeight", "PDF", "MuonSF", "ElecronSF","TriggerSFWeight","btagEventWeight", "QCDScale0w", "QCDScale1w", "QCDScale2w"]
+pro_syst = [ "ElectronEn", "MuonEn", "jesTotal", "jer"]
+ext_syst = [ "puWeight", "PDF", "MuonSF", "ElecronSF", "EWK", "nvtxWeight","TriggerSFWeight","btagEventWeight", "QCDScale0w", "QCDScale1w", "QCDScale2w"]
 
-jetmetCorrector = createJMECorrector(isMC = options.isMC, dataYear = options.era, runPeriod= runperiod_ , jesUncert="Merged", metBranchName=metBranchName) # add METfixEE2017
-
-if options.isMC:
-   if options.era=="2016":
-      for ix in ['jesAbsolute', 'jesAbsolute_2016', 'jesBBEC1', 'jesBBEC1_2016', 'jesEC2', 'jesEC2_2016', 'jesFlavorQCD', 'jesHF', 'jesHF_2016', 'jesRelativeBal', 'jesRelativeSample_2016']:
-         pro_syst.append(ix)
-   if options.era=="2017":
-      for ix in ['jesAbsolute', 'jesAbsolute_2017', 'jesBBEC1', 'jesBBEC1_2017', 'jesEC2', 'jesEC2_2017', 'jesFlavorQCD', 'jesHF', 'jesHF_2017', 'jesRelativeBal', 'jesRelativeSample_2017']:
-         pro_syst.append(ix)
-   if options.era=="2018":
-      for ix in ['jesAbsolute', 'jesAbsolute_2018', 'jesBBEC1', 'jesBBEC1_2018', 'jesEC2', 'jesEC2_2018', 'jesFlavorQCD', 'jesHF', 'jesHF_2018', 'jesRelativeBal', 'jesRelativeSample_2018','jesHEMIssue']:
-         pro_syst.append(ix)
+jetmetCorrector = createJMECorrector(isMC = options.isMC, dataYear = options.era, runPeriod= runperiod_ , jesUncert="Total") # add METfixEE2017
 
 if options.isMC:
    print "sample : ", options.dataset, " candtag : ", condtag_
+   options.period = condtag_
    try:
-      combineHLT = yaml.safe_load(open("combineHLT_Run2.yaml"))
+      combineHLT = yaml.safe_load(open("combineHLT_Run2_MET.yaml"))
    except yaml.YAMLError as exc:
       print(exc)
    if options.era=="2016":
-      pre_selection = pre_selection + " && (" + combineHLT.get("Run2016.MC", "") + ")"
+      pre_selection = pre_selection + " && (" + combineHLT.get("Run2016All.MC", "") + ")"
    if options.era=="2017":
-      pre_selection = pre_selection + " && (" + combineHLT.get("Run2017.MC", "") + ")"
+      pre_selection = pre_selection + " && (" + combineHLT.get("Run2017All.MC", "") + ")"
    if options.era=="2018":
-      pre_selection = pre_selection + " && (" + combineHLT.get("Run2018.MC", "") + ")"
+      pre_selection = pre_selection + " && (" + combineHLT.get("Run2018All.MC", "") + ")"
 
    if options.era=="2016":
+      modules_era.append(jetmetCorrector())
       modules_era.append(puAutoWeight_2016())
       modules_era.append(PrefCorr())
-      modules_era.append(jetmetCorrector())
-      modules_era.append(btagSFProducer("Legacy2016", "deepjet",['shape_corr'],jesSystsForShape=['jesAbsolute', 'jesAbsolute_2016', 'jesBBEC1', 'jesBBEC1_2016', 'jesEC2', 'jesEC2_2016', 'jesFlavorQCD', 'jesHF', 'jesHF_2016', 'jesRelativeBal', 'jesRelativeSample_2016']))
       modules_era.append(muonScaleRes2016())
       modules_era.append(lepSF_2016())
-      # modules_era.append(nvtxWeight_2016())
       ext_syst.append("PrefireWeight")
    if options.era=="2017":
+      modules_era.append(jetmetCorrector())
       modules_era.append(puAutoWeight_2017())
       modules_era.append(PrefCorr())
-      modules_era.append(jetmetCorrector())
-      modules_era.append(btagSFProducer("2017", "deepjet",['shape_corr'],jesSystsForShape=['jesAbsolute', 'jesAbsolute_2017', 'jesBBEC1', 'jesBBEC1_2017', 'jesEC2', 'jesEC2_2017', 'jesFlavorQCD', 'jesHF', 'jesHF_2017', 'jesRelativeBal', 'jesRelativeSample_2017']))
       modules_era.append(muonScaleRes2017())
       modules_era.append(lepSF_2017())
-      # modules_era.append(nvtxWeight_2017())
       ext_syst.append("PrefireWeight")
    if options.era=="2018":
-      modules_era.append(puAutoWeight_2018())
       modules_era.append(jetmetCorrector())
-      modules_era.append(btagSFProducer("2018","deepjet",['shape_corr'],jesSystsForShape=['jesAbsolute', 'jesAbsolute_2018', 'jesBBEC1', 'jesBBEC1_2018', 'jesEC2', 'jesEC2_2018', 'jesFlavorQCD', 'jesHF', 'jesHF_2018', 'jesRelativeBal', 'jesRelativeSample_2018','jesHEMIssue']))
+      modules_era.append(puAutoWeight_2018())
       modules_era.append(muonScaleRes2018())
       modules_era.append(lepSF_2018())
-      # modules_era.append(nvtxWeight_2018())
-
-   # modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=''))
-   modules_era.append(DiHiggsProducer(isMC=options.isMC, era=str(options.era), do_syst=0, syst_var=''))
-
-   modules_era.append(AngularVariablesProducerForHH())
-#   modules_era.append(GenTopProducer())
 
 
-   modules_era.append(AngularVariablesProducerForHH())
-#   modules_era.append(BDTdiscriminantProducerForHH(era=str(options.era), do_syst=0, syst_var=''))
+   modules_era.append(ScaleFactorProducer(isMC=options.isMC, era=str(options.era), period=str(options.period), do_syst=0, syst_var=''))
+
    if options.era=="2016":
-
-      modules_era.append(TriggerSF_2016(syst=''))
+      modules_era.append(TriggerSF_2016())
    if options.era=="2017":
-      modules_era.append(TriggerSF_2017(syst=''))
+      modules_era.append(TriggerSF_2017())
    if options.era=="2018":
-      modules_era.append(TriggerSF_2018(syst=''))
-
-
-
-   # modules_era.append(GenMonoZProducer())
-   # WZ or ZZ sample for ewk corrections and ADD for EFT weights
-   # if "ZZTo" in options.dataset and "GluGluToContin" not in options.dataset:
-      # modules_era.append(EWProducer(1, True))
-   # if "WZTo" in options.dataset:
-      # modules_era.append(EWProducer(2, False))
-
-
+      modules_era.append(TriggerSF_2018())
 
    # for shift-based systematics
    if options.doSyst:
@@ -241,16 +205,7 @@ if options.isMC:
          for var in ["Up", "Down"]:
 	    # if "jesTotal" in sys and options.doSyst==1: modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=sys+var))
 	    # if "jer" in sys and options.doSyst==1: modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=sys+var))
-            modules_era.append(DiHiggsProducer(options.isMC, str(options.era), do_syst=options.doSyst, syst_var=sys+var))
-            modules_era.append(AngularVariablesProducerForHH(do_syst=options.doSyst, syst_var=sys+var))
-
-            if options.era=="2016":
-               modules_era.append(TriggerSF_2016(syst=sys+var))
-            if options.era=="2017":
-               modules_era.append(TriggerSF_2017(syst=sys+var))
-            if options.era=="2018":
-               modules_era.append(TriggerSF_2018(syst=sys+var))
-#            modules_era.append(BDTdiscriminantProducerForHH(era=str(options.era), do_syst=options.doSyst, syst_var=sys+var))
+            modules_era.append(ScaleFactorProducer(options.isMC, str(options.era), period=str(options.period),do_syst=options.doSyst, syst_var=sys+var))
 
 else:
    if options.era=="2016":
@@ -260,58 +215,26 @@ else:
    if options.era=="2018":
       modules_era.append(muonScaleRes2018())
 
+   options.period = condtag_
    print "sample : ", options.dataset, " candtag : ", condtag_
    try:
-      combineHLT = yaml.safe_load(open("combineHLT_Run2.yaml"))
+      combineHLT = yaml.safe_load(open("combineHLT_Run2_MET.yaml"))
    except yaml.YAMLError as exc:
       print(exc)
    if options.era=="2016":
-      if 'Run2016H' in condtag_:
-	pre_selection = pre_selection + " && (" + combineHLT.get("Run2016H.%s" % options.dataset, "") + ")"
-      else:
-        pre_selection = pre_selection + " && (" + combineHLT.get("Run2016All.%s" % options.dataset, "") + ")"
+      pre_selection = pre_selection + " && (" + combineHLT.get("Run2016All.%s" % options.dataset, "") + ")"
    if options.era=="2017":
       if 'Run2017B' in condtag_:
          pre_selection = pre_selection + " && (" + combineHLT.get("Run2017B.%s" % options.dataset, "") + ")"
-      elif 'Run2017C' in condtag_:
-         pre_selection = pre_selection + " && (" + combineHLT.get("Run2017C.%s" % options.dataset, "") + ")"
       else:
-         pre_selection = pre_selection + " && (" + combineHLT.get("Run2017DF.%s" % options.dataset, "") + ")"
+         pre_selection = pre_selection + " && (" + combineHLT.get("Run2017All.%s" % options.dataset, "") + ")"
    if options.era=="2018":
-      if ('Run2018A' in condtag_) or ('Run2018B' in condtag_):
-         pre_selection = pre_selection + " && (" + combineHLT.get("Run2018AB.%s" % options.dataset, "") + ")"
-      else:
-         pre_selection = pre_selection + " && (" + combineHLT.get("Run2018CD.%s" % options.dataset, "") + ")"
+      pre_selection = pre_selection + " && (" + combineHLT.get("Run2018All.%s" % options.dataset, "") + ")"
 
    print " -- era : ",
+   modules_era.append(jetmetCorrector())   
+   modules_era.append(ScaleFactorProducer(isMC=options.isMC, era=str(options.era), period=str(options.period),do_syst=0, syst_var=''))
 
-   runPeriod = condtag_.split(options.era)[1][:1]
-   jmeCorrections = createJMECorrector(isMC=False, 
-                                       dataYear=options.era, 
-                                       runPeriod=runPeriod, 
-                                       jesUncert="Total", 
-                                       metBranchName=metBranchName)   
-
-   modules_era.append(jetmetCorrector())
-  
-#   if options.era=="2016":
-#      if 'Run2016G' or 'Run2016H' in condtag_:
-#         modules_era.append(getattr(jetRecalib, 'jetRecalib2016GH')() )
-#      elif 'Run2016E' or 'Run2016F' in condtag_:
-#         modules_era.append(getattr(jetRecalib, 'jetRecalib2016EF')() )
-#      else:
-#         modules_era.append(getattr(jetRecalib('AK4PFchs'), 'jetRecalib2016BCD')() )
-#   if options.era=="2017":
-#      if 'Run2017D' or 'Run2017E' in condtag_:
-#         modules_era.append(getattr(jetRecalib, 'jetRecalib2017DE')() )
-#      else:
-#         modules_era.append(getattr(jetRecalib, 'jetRecalib2017%s' % condtag_.split(options.era)[1])() )
-#   if options.era=="2018":
-#      modules_era.append(getattr(jetRecalib, 'jetRecalib2018%s' % condtag_.split(options.era)[1][:1])() )
-
-#   modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=''))
-   modules_era.append(DiHiggsProducer  (isMC=options.isMC, era=str(options.era), do_syst=0, syst_var=''))
-   modules_era.append(AngularVariablesProducerForHH())
    if options.era=="2016":
        options.json = "Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
    if options.era=="2017":

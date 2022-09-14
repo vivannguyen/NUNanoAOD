@@ -158,6 +158,10 @@ ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1:
     br: 1
     kr: 1
     xsec: 35.85
+TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8:
+    br: 1
+    kr: 1
+    xsec: 88.3419
 TT_TuneCUETP8M2T4_13TeV-powheg-pythia8:
     br: 1
     kr: 1

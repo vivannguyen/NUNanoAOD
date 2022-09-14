@@ -34,6 +34,7 @@ class TriggerSFProducer(Module):
         pass
 
     def analyze(self, event):
+        print "here we are.."
         """process event, return True (go to next module) or False (fail, go to next event)"""
         lep_cat = 0
         if hasattr(event,"lep_category"):
@@ -50,7 +51,9 @@ class TriggerSFProducer(Module):
             l2_eta = abs(float(getattr(event,"trailing_lep_eta")))
         weight = 1
         weightError = 0
-        if lep_cat==1:# or lep_cat==5 or lep_cat==7 : #these are MM. MML and MMLL lepton categories
+
+        if lep_cat==2:# or lep_cat==5 or lep_cat==7 : #these are MM. MML and MMLL lepton categories
+
 	    if l1_eta <= 1.5 and l2_eta <= 1.5:
 	    	hist = self.loadHisto(self.targetfile,"trgSFMMBB")
             elif l1_eta >= 1.5 and l2_eta <= 1.5:
@@ -88,9 +91,9 @@ class TriggerSFProducer(Module):
         weight = hist.GetBinContent(searchbinx,searchbiny)
         self.out.fillBranch(self.name, weight)
         if self.doSysVar:
-            weightError = hist.GetBinErrorUp(searchbinx,searchbiny)
+            weightError = 0.01#hist.GetBinErrorUp(searchbinx,searchbiny)
             self.out.fillBranch(self.name+"Up", weight+weightError)
-            weightError = hist.GetBinErrorLow(searchbinx,searchbiny)
+            weightError = 0.01#hist.GetBinErrorLow(searchbinx,searchbiny)
             self.out.fillBranch(self.name+"Down", weight-weightError)
         return True
 

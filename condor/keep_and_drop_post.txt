@@ -4,6 +4,7 @@ drop FatJet*
 drop GenDressedLepton*
 drop GenJetAK8*
 drop GenMET*
+drop GenPart*
 drop GenJet*
 drop GenVisTau*
 drop Generator*
@@ -19,19 +20,24 @@ drop SubJet*
 drop fixedGridRhoFastjet*
 drop genTtbarId*
 drop MET*
-drop MET_pt*
-drop MET_phi*
 drop Tau*
 drop Muon*
 drop Electron*
 drop Jet*
+drop Jet_btagSF_deepjet_*
 drop Jet_pt*
+drop Jet_eta*
 drop Jet_phi*
 drop Jet_btag*
+drop Jet_hadronFlavour*
+drop Jet_jetId
 drop HLT*
 drop Fsr*
 drop Raw*
-drop *TrigObj*
+
+drop Trig*
+keep Trigger*
+
 drop PV*
 drop SV*
 drop Flag*
