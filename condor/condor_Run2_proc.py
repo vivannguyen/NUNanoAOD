@@ -212,9 +212,6 @@ if options.isMC:
 
    modules_era.append(AngularVariablesProducerForHH())
 #   modules_era.append(GenTopProducer())
-
-
-   modules_era.append(AngularVariablesProducerForHH())
 #   modules_era.append(BDTdiscriminantProducerForHH(era=str(options.era), do_syst=0, syst_var=''))
    if options.era=="2016":
 
