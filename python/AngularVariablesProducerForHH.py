@@ -333,128 +333,151 @@ class AngularVariablesProducerForHH(Module):
 
 
     def analyze(self, event):
+        goodEvent = int(getattr(event, "good_event{}".format(self.syst_suffix)))
 
-        
-        # Z->ll
-        _lead_lepton_pt = float(getattr(event,"leading_lep_pt{}".format(self.syst_suffix)))
-        _lead_lepton_eta = float(getattr(event,"leading_lep_eta{}".format(self.syst_suffix)))
-        _lead_lepton_phi = float(getattr(event,"leading_lep_phi{}".format(self.syst_suffix)))
-        _trail_lepton_pt = float(getattr(event,"trailing_lep_pt{}".format(self.syst_suffix)))
-        _trail_lepton_eta = float(getattr(event,"trailing_lep_eta{}".format(self.syst_suffix)))
-        _trail_lepton_phi = float(getattr(event,"trailing_lep_phi{}".format(self.syst_suffix)))
+        if goodEvent==1:
+            # Z->ll
+            _lead_lepton_pt = float(getattr(event,"leading_lep_pt{}".format(self.syst_suffix)))
+            _lead_lepton_eta = float(getattr(event,"leading_lep_eta{}".format(self.syst_suffix)))
+            _lead_lepton_phi = float(getattr(event,"leading_lep_phi{}".format(self.syst_suffix)))
+            _trail_lepton_pt = float(getattr(event,"trailing_lep_pt{}".format(self.syst_suffix)))
+            _trail_lepton_eta = float(getattr(event,"trailing_lep_eta{}".format(self.syst_suffix)))
+            _trail_lepton_phi = float(getattr(event,"trailing_lep_phi{}".format(self.syst_suffix)))
 
-        # H->bb
-        _lead_Hjet_pt = float(getattr(event,"leading_Hbb_pt{}".format(self.syst_suffix)))
-        _lead_Hjet_eta = float(getattr(event,"leading_Hbb_eta{}".format(self.syst_suffix)))
-        _lead_Hjet_phi = float(getattr(event,"leading_Hbb_phi{}".format(self.syst_suffix)))
-        _trail_Hjet_pt = float(getattr(event,"trailing_Hbb_pt{}".format(self.syst_suffix)))
-        _trail_Hjet_eta = float(getattr(event,"trailing_Hbb_eta{}".format(self.syst_suffix)))
-         _trail_Hjet_phi = float(getattr(event,"trailing_Hbb_phi{}".format(self.syst_suffix)))
-        # Z->qq
-        _lead_Zjet_pt = float(getattr(event,"leading_jet_pt{}".format(self.syst_suffix)))
-        _lead_Zjet_eta = float(getattr(event,"leading_jet_eta{}".format(self.syst_suffix)))
-        _lead_Zjet_phi = float(getattr(event,"leading_jet_phi{}".format(self.syst_suffix)))
-        _trail_Zjet_pt = float(getattr(event,"trailing_jet_pt{}".format(self.syst_suffix)))
-        _trail_Zjet_eta = float(getattr(event,"trailing_jet_eta{}".format(self.syst_suffix)))
-        _trail_Zjet_phi = float(getattr(event,"trailing_jet_phi{}".format(self.syst_suffix)))
+            # H->bb
+            _lead_Hjet_pt = float(getattr(event,"leading_Hbb_pt{}".format(self.syst_suffix)))
+            _lead_Hjet_eta = float(getattr(event,"leading_Hbb_eta{}".format(self.syst_suffix)))
+            _lead_Hjet_phi = float(getattr(event,"leading_Hbb_phi{}".format(self.syst_suffix)))
+            _trail_Hjet_pt = float(getattr(event,"trailing_Hbb_pt{}".format(self.syst_suffix)))
+            _trail_Hjet_eta = float(getattr(event,"trailing_Hbb_eta{}".format(self.syst_suffix)))
+            _trail_Hjet_phi = float(getattr(event,"trailing_Hbb_phi{}".format(self.syst_suffix)))
+            # Z->qq
+            _lead_Zjet_pt = float(getattr(event,"leading_jet_pt{}".format(self.syst_suffix)))
+            _lead_Zjet_eta = float(getattr(event,"leading_jet_eta{}".format(self.syst_suffix)))
+            _lead_Zjet_phi = float(getattr(event,"leading_jet_phi{}".format(self.syst_suffix)))
+            _trail_Zjet_pt = float(getattr(event,"trailing_jet_pt{}".format(self.syst_suffix)))
+            _trail_Zjet_eta = float(getattr(event,"trailing_jet_eta{}".format(self.syst_suffix)))
+            _trail_Zjet_phi = float(getattr(event,"trailing_jet_phi{}".format(self.syst_suffix)))
             
-        electrons = list(Collection(event, "Electron"))
-        muons = list(Collection(event, "Muon"))
-        jets = list(Collection(event, "Jet"))
+            electrons = list(Collection(event, "Electron"))
+            muons = list(Collection(event, "Muon"))
+            jets = list(Collection(event, "Jet"))
             
-        Higgsbb_cand_p4 = ROOT.TLorentzVector()
-        HiggsZZ_cand_p4 = ROOT.TLorentzVector()
-        HiggsZjet_cand_p4 = ROOT.TLorentzVector()
-        HiggsZlep_cand_p4 = ROOT.TLorentzVector()
-        Higgs_cand_0 = ROOT.TLorentzVector()
-        Zjet_cand_0 = ROOT.TLorentzVector()
-        Zlep_cand_0 = ROOT.TLorentzVector()
-        Higgs_cand_1 = ROOT.TLorentzVector()
-        Higgsbb_candidate = []
-        HiggsZjet_candidate = []
-        HiggsZlep_candidate = []
+            Higgsbb_cand_p4 = ROOT.TLorentzVector()
+            HiggsZZ_cand_p4 = ROOT.TLorentzVector()
+            HiggsZjet_cand_p4 = ROOT.TLorentzVector()
+            HiggsZlep_cand_p4 = ROOT.TLorentzVector()
+            Higgs_cand_0 = ROOT.TLorentzVector()
+            Zjet_cand_0 = ROOT.TLorentzVector()
+            Zlep_cand_0 = ROOT.TLorentzVector()
+            Higgs_cand_1 = ROOT.TLorentzVector()
+            Higgsbb_candidate = []
+            HiggsZjet_candidate = []
+            HiggsZlep_candidate = []
 
-        #        print 'test: ',_lead_lepton_eta,_lead_lepton_phi
+            #        print 'test: ',_lead_lepton_eta,_lead_lepton_phi
 
-        for muon in muons:
-            #           print 'mu: ',muon.eta,muon.phi
-            if tk.deltaR( _lead_lepton_eta,_lead_lepton_phi, muon.eta, muon.phi,) < 0.0001:
-                HiggsZlep_candidate.append(muon)
-                HiggsZlep_candidate[-1].pt = _lead_lepton_pt
-            if tk.deltaR( _trail_lepton_eta,_trail_lepton_phi, muon.eta, muon.phi,) < 0.0001:
-                HiggsZlep_candidate.append(muon)
-                HiggsZlep_candidate[-1].pt = _trail_lepton_pt
+            for muon in muons:
+                #           print 'mu: ',muon.eta,muon.phi
+                if tk.deltaR( _lead_lepton_eta,_lead_lepton_phi, muon.eta, muon.phi,) < 0.0001:
+                    HiggsZlep_candidate.append(muon)
+                    HiggsZlep_candidate[-1].pt = _lead_lepton_pt
+                if tk.deltaR( _trail_lepton_eta,_trail_lepton_phi, muon.eta, muon.phi,) < 0.0001:
+                    HiggsZlep_candidate.append(muon)
+                    HiggsZlep_candidate[-1].pt = _trail_lepton_pt
 
-        for ele in electrons:
-            if tk.deltaR( _lead_lepton_eta,_lead_lepton_phi, ele.eta, ele.phi,) < 0.0001:
-                HiggsZlep_candidate.append(ele)
-                HiggsZlep_candidate[-1].pt = _lead_lepton_pt
-            if tk.deltaR( _trail_lepton_eta,_trail_lepton_phi, ele.eta, ele.phi,) < 0.0001:
-                HiggsZlep_candidate.append(ele)
-                HiggsZlep_candidate[-1].pt = _trail_lepton_pt
+            for ele in electrons:
+                if tk.deltaR( _lead_lepton_eta,_lead_lepton_phi, ele.eta, ele.phi,) < 0.0001:
+                    HiggsZlep_candidate.append(ele)
+                    HiggsZlep_candidate[-1].pt = _lead_lepton_pt
+                if tk.deltaR( _trail_lepton_eta,_trail_lepton_phi, ele.eta, ele.phi,) < 0.0001:
+                    HiggsZlep_candidate.append(ele)
+                    HiggsZlep_candidate[-1].pt = _trail_lepton_pt
       
-        for jet in jets:
-            if tk.deltaR(_lead_Zjet_eta,_lead_Zjet_phi,jet.eta,jet.phi,) < 0.0001:
-                HiggsZjet_candidate.append(jet)
-                HiggsZjet_candidate[-1].pt = _lead_Zjet_pt
-            if tk.deltaR(_trail_Zjet_eta,_trail_Zjet_phi,jet.eta,jet.phi,)< 0.0001:
-                HiggsZjet_candidate.append(jet)
-                HiggsZjet_candidate[-1].pt = _trail_Zjet_pt
-            if tk.deltaR(_lead_Hjet_eta,_lead_Hjet_phi,jet.eta,jet.phi,)< 0.0001:
-                Higgsbb_candidate.append(jet)
-                Higgsbb_candidate[-1].pt = _lead_Hjet_pt
-            if tk.deltaR(_trail_Hjet_eta,_trail_Hjet_phi,jet.eta,jet.phi,)< 0.0001:
-                Higgsbb_candidate.append(jet)
-                Higgsbb_candidate[-1].pt = _trail_Hjet_pt
+            for jet in jets:
+                if tk.deltaR(_lead_Zjet_eta,_lead_Zjet_phi,jet.eta,jet.phi,) < 0.0001:
+                    HiggsZjet_candidate.append(jet)
+                    HiggsZjet_candidate[-1].pt = _lead_Zjet_pt
+                if tk.deltaR(_trail_Zjet_eta,_trail_Zjet_phi,jet.eta,jet.phi,)< 0.0001:
+                    HiggsZjet_candidate.append(jet)
+                    HiggsZjet_candidate[-1].pt = _trail_Zjet_pt
+                if tk.deltaR(_lead_Hjet_eta,_lead_Hjet_phi,jet.eta,jet.phi,)< 0.0001:
+                    Higgsbb_candidate.append(jet)
+                    Higgsbb_candidate[-1].pt = _lead_Hjet_pt
+                if tk.deltaR(_trail_Hjet_eta,_trail_Hjet_phi,jet.eta,jet.phi,)< 0.0001:
+                    Higgsbb_candidate.append(jet)
+                    Higgsbb_candidate[-1].pt = _trail_Hjet_pt
 
-        Higgs_cand_0 = Higgsbb_candidate[0].p4() + Higgsbb_candidate[1].p4()
-        Zlep_cand_0 = HiggsZlep_candidate[0].p4() + HiggsZlep_candidate[1].p4()       
-        Zjet_cand_0 = HiggsZjet_candidate[0].p4() + HiggsZjet_candidate[1].p4()
-        Higgs_cand_1 = Zlep_cand_0 + Zjet_cand_0
+            Higgs_cand_0 = Higgsbb_candidate[0].p4() + Higgsbb_candidate[1].p4()
+            Zlep_cand_0 = HiggsZlep_candidate[0].p4() + HiggsZlep_candidate[1].p4()       
+            Zjet_cand_0 = HiggsZjet_candidate[0].p4() + HiggsZjet_candidate[1].p4()
+            Higgs_cand_1 = Zlep_cand_0 + Zjet_cand_0
 
 
-        #        dR_l1l2 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi,)
-        dR_l1j1 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi,)
-        dR_l1j2 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi,)
-        dR_l1b1 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
-        dR_l1b2 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
-        dR_l2j1 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi,)
-        dR_l2j2 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi,)
-        dR_l2b1 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
-        dR_l2b2 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
-        dR_j1j2 = tk.deltaR(HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi, HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi,)
-        dR_j1b1 = tk.deltaR(HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
-        dR_j1b2 = tk.deltaR(HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
-        dR_j2b1 = tk.deltaR(HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
-        dR_j2b2 = tk.deltaR(HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
-        dR_b1b2 = tk.deltaR(Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
+            #        dR_l1l2 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi,)
+            dR_l1j1 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi,)
+            dR_l1j2 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi,)
+            dR_l1b1 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
+            dR_l1b2 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
+            dR_l2j1 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi,)
+            dR_l2j2 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi,)
+            dR_l2b1 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
+            dR_l2b2 = tk.deltaR(HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
+            dR_j1j2 = tk.deltaR(HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi, HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi,)
+            dR_j1b1 = tk.deltaR(HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
+            dR_j1b2 = tk.deltaR(HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
+            dR_j2b1 = tk.deltaR(HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
+            dR_j2b2 = tk.deltaR(HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
+            dR_b1b2 = tk.deltaR(Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
 
-        cosThetaStar_CS = self.getCosThetaStar_CS(Higgs_cand_0,Higgs_cand_1)
-        cosTheta = self.CosThetaAngles(Higgsbb_candidate[0].p4(),Higgsbb_candidate[1].p4(),HiggsZjet_candidate[0].p4(),HiggsZjet_candidate[1].p4(),HiggsZlep_candidate[0].p4(),HiggsZlep_candidate[1].p4())
-        Phi = self.getPhi(Higgsbb_candidate[0].p4(),Higgsbb_candidate[1].p4(),HiggsZjet_candidate[0].p4(),HiggsZjet_candidate[1].p4(),HiggsZlep_candidate[0].p4(),HiggsZlep_candidate[1].p4())
-        PhiZZ = self.getPhi_ZZ(HiggsZjet_candidate[0].p4(),HiggsZjet_candidate[1].p4(),HiggsZlep_candidate[0].p4(),HiggsZlep_candidate[1].p4())
+            cosThetaStar_CS = self.getCosThetaStar_CS(Higgs_cand_0,Higgs_cand_1)
+            cosTheta = self.CosThetaAngles(Higgsbb_candidate[0].p4(),Higgsbb_candidate[1].p4(),HiggsZjet_candidate[0].p4(),HiggsZjet_candidate[1].p4(),HiggsZlep_candidate[0].p4(),HiggsZlep_candidate[1].p4())
+            Phi = self.getPhi(Higgsbb_candidate[0].p4(),Higgsbb_candidate[1].p4(),HiggsZjet_candidate[0].p4(),HiggsZjet_candidate[1].p4(),HiggsZlep_candidate[0].p4(),HiggsZlep_candidate[1].p4())
+            PhiZZ = self.getPhi_ZZ(HiggsZjet_candidate[0].p4(),HiggsZjet_candidate[1].p4(),HiggsZlep_candidate[0].p4(),HiggsZlep_candidate[1].p4())
 
-        #        self.out.fillBranch("dR_l1l2{}".format(self.syst_suffix), dR_l1l2)
-        self.out.fillBranch("dR_l1j1{}".format(self.syst_suffix), dR_l1j1)
-        self.out.fillBranch("dR_l1j2{}".format(self.syst_suffix), dR_l1j2)
-        self.out.fillBranch("dR_l1b1{}".format(self.syst_suffix), dR_l1b1)
-        self.out.fillBranch("dR_l1b2{}".format(self.syst_suffix), dR_l1b2)
-        self.out.fillBranch("dR_l2j1{}".format(self.syst_suffix), dR_l2j1)
-        self.out.fillBranch("dR_l2j2{}".format(self.syst_suffix), dR_l2j2)
-        self.out.fillBranch("dR_l2b1{}".format(self.syst_suffix), dR_l2b1)
-        self.out.fillBranch("dR_l2b2{}".format(self.syst_suffix), dR_l2b2)
-        self.out.fillBranch("dR_j1j2{}".format(self.syst_suffix), dR_j1j2)
-        self.out.fillBranch("dR_j1b1{}".format(self.syst_suffix), dR_j1b1)
-        self.out.fillBranch("dR_j1b2{}".format(self.syst_suffix), dR_j1b2)
-        self.out.fillBranch("dR_j2b1{}".format(self.syst_suffix), dR_j2b1)
-        self.out.fillBranch("dR_j2b2{}".format(self.syst_suffix), dR_j2b2)
-        self.out.fillBranch("dR_b1b2{}".format(self.syst_suffix), dR_b1b2)
-        self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), cosThetaStar_CS)
-        self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),cosTheta[1])        
-        self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix),cosTheta[2])
-        self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix),cosTheta[3])
-        self.out.fillBranch("phi1{}".format(self.syst_suffix),Phi[-1])
-        self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix),PhiZZ[-1])
+            #        self.out.fillBranch("dR_l1l2{}".format(self.syst_suffix), dR_l1l2)
+            self.out.fillBranch("dR_l1j1{}".format(self.syst_suffix), dR_l1j1)
+            self.out.fillBranch("dR_l1j2{}".format(self.syst_suffix), dR_l1j2)
+            self.out.fillBranch("dR_l1b1{}".format(self.syst_suffix), dR_l1b1)
+            self.out.fillBranch("dR_l1b2{}".format(self.syst_suffix), dR_l1b2)
+            self.out.fillBranch("dR_l2j1{}".format(self.syst_suffix), dR_l2j1)
+            self.out.fillBranch("dR_l2j2{}".format(self.syst_suffix), dR_l2j2)
+            self.out.fillBranch("dR_l2b1{}".format(self.syst_suffix), dR_l2b1)
+            self.out.fillBranch("dR_l2b2{}".format(self.syst_suffix), dR_l2b2)
+            self.out.fillBranch("dR_j1j2{}".format(self.syst_suffix), dR_j1j2)
+            self.out.fillBranch("dR_j1b1{}".format(self.syst_suffix), dR_j1b1)
+            self.out.fillBranch("dR_j1b2{}".format(self.syst_suffix), dR_j1b2)
+            self.out.fillBranch("dR_j2b1{}".format(self.syst_suffix), dR_j2b1)
+            self.out.fillBranch("dR_j2b2{}".format(self.syst_suffix), dR_j2b2)
+            self.out.fillBranch("dR_b1b2{}".format(self.syst_suffix), dR_b1b2)
+            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), cosThetaStar_CS)
+            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),cosTheta[1])        
+            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix),cosTheta[2])
+            self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix),cosTheta[3])
+            self.out.fillBranch("phi1{}".format(self.syst_suffix),Phi[-1])
+            self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix),PhiZZ[-1])
+
+        else:
+            self.out.fillBranch("dR_l1j1{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_l1j2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_l1b1{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_l1b2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_l2j1{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_l2j2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_l2b1{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_l2b2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_j1j2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_j1b1{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_j1b2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_j2b1{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_j2b2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("dR_b1b2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),-99)
+            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("phi1{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix), -99)
 
         return True
 

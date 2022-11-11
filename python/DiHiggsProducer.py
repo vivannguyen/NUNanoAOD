@@ -35,6 +35,7 @@ class DiHiggsProducer(Module):
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
 
+        self.out.branch("good_event{}".format(self.syst_suffix), "I")
         self.out.branch("met_pt{}".format(self.syst_suffix), "F")
         self.out.branch("met_phi{}".format(self.syst_suffix), "F")
         self.out.branch("ngood_leptons{}".format(self.syst_suffix), "I")
@@ -158,6 +159,11 @@ class DiHiggsProducer(Module):
             self.out.branch("w_btag_SF_sys_down_hfstats2".format(self.syst_suffix),"F")
             self.out.branch("w_btag_SF_sys_down_lfstats1".format(self.syst_suffix),"F")
             self.out.branch("w_btag_SF_sys_down_lfstats2".format(self.syst_suffix),"F")
+        if self.isMC and len(self.syst_suffix)==0:
+            self.out.branch("met_ptUnclustEnUp{}".format(self.syst_suffix), "F")
+            self.out.branch("met_phiUnclustEnUp{}".format(self.syst_suffix), "F")
+            self.out.branch("met_ptUnclustEnDown{}".format(self.syst_suffix), "F")
+            self.out.branch("met_phiUnclustEnDown{}".format(self.syst_suffix), "F")
 
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
@@ -423,6 +429,44 @@ class DiHiggsProducer(Module):
         met_p4 = ROOT.TLorentzVector()
         met_p4.SetPtEtaPhiM(met.pt,0.0,met.phi, 0.0)
 
+        if self.isMC and len(self.syst_suffix)==0:
+            var_met_pt_Up  = 0
+            var_met_phi_Up = 0
+            var_met_pt_Down  = 0
+            var_met_phi_Down = 0
+            try:
+                if self.era == "2017":
+                    var_met_pt_Up = getattr(event,  "METFixEE2017_pt_unclustEnUp", None)
+                else:
+                    var_met_pt_Up = getattr(event,  "MET_pt_unclustEnUp", None)
+            except:
+                var_met_pt_Up = -99
+            try:
+                if self.era == "2017":
+                    var_met_phi_Up = getattr(event, "METFixEE2017_phi_unclustEnUp", None)
+                else:
+                    var_met_phi_Up = getattr(event, "MET_phi_unclustEnUp", None)
+            except:
+                var_met_phi_Up = -99
+            try:
+                if self.era == "2017":
+                    var_met_pt_Down = getattr(event,  "METFixEE2017_pt_unclustEnDown", None)
+                else:
+                    var_met_pt_Down = getattr(event,  "MET_pt_unclustEnDown", None)
+            except:
+                var_met_pt_Down = -99
+            try:
+                if self.era == "2017":
+                    var_met_phi_Down = getattr(event, "METFixEE2017_phi_unclustEnDown", None)
+                else:
+                    var_met_phi_Down = getattr(event, "MET_phi_unclustEnDown", None)
+            except:
+                var_met_phi_Down = -99
+
+            self.out.fillBranch("met_ptUnclustEnUp{}".format(self.syst_suffix),var_met_pt_Up)
+            self.out.fillBranch("met_phiUnclustEnUp{}".format(self.syst_suffix), var_met_phi_Up)
+            self.out.fillBranch("met_ptUnclustEnDown{}".format(self.syst_suffix),var_met_pt_Down)
+            self.out.fillBranch("met_phiUnclustEnDown{}".format(self.syst_suffix),var_met_phi_Down)
 
         # Electrons Energy
         if "ElectronEn" in self.syst_var:
@@ -1150,6 +1194,107 @@ class DiHiggsProducer(Module):
         # Let remove the negative categories with no obvious meaning meaning
         # This will reduce the size of most of the bacground and data
         if (lep_category > 0 and event_category > 0 and num_jets >= 4  and len(good_leptons) == 2 and nextra_leptons == 0 and event_category < 10 and len(had_taus)==0): 
+#            return True
+            self.out.fillBranch("good_event{}".format(self.syst_suffix),1)
             return True
         else:
-            return False
+#            return False
+            self.out.fillBranch("good_event{}".format(self.syst_suffix),0)
+            self.out.fillBranch("met_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("met_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("ngood_leptons{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("nextra_leptons{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("lep_category{}".format(self.syst_suffix), -99) 
+            self.out.fillBranch("event_category{}".format(self.syst_suffix), -99) 
+            self.out.fillBranch("dR_l1l2{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("event_category_30{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("event_category_35{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("event_category_40{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("event_category_mini30{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("event_category_mini35{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("leading_Hbb_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_Hbb_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_Hbb_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_Hbb_btag{}".format(self.syst_suffix), -99)
+
+            self.out.fillBranch("trailing_Hbb_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_Hbb_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_Hbb_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_Hbb_btag{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("leading_lep_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_lep_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_lep_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_lep_iso{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_lep_iso_chg{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_lep_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_lep_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_lep_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_lep_iso{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_lep_iso_chg{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_lep_flavor{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_lep_flavor{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("leading_jet_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_jet_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_jet_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leading_jet_qgl{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("trailing_jet_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_jet_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_jet_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("trailing_jet_qgl{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("met_filter{}".format(self.syst_suffix), -99)
+            
+            #Adding in the Higgs boson candidate variables
+            self.out.fillBranch("Higgsbb_cand_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Higgsbb_cand_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Higgsbb_cand_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Higgsbb_cand_mass{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("HiggsZZ_cand_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("HiggsZZ_cand_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("HiggsZZ_cand_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("HiggsZZ_cand_mass{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("Zlep_cand_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Zlep_cand_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Zlep_cand_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Zlep_cand_mass{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("Zjet_cand_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Zjet_cand_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Zjet_cand_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("Zjet_cand_mass{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("HH_cand_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("HH_cand_eta{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("HH_cand_phi{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("HH_cand_mass{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("jetHT{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("ngood_jets{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("ngood_jets_noHbb{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("ngood_bjets{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("ngood_bjetsM{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("ngood_bjetsT{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("ngood_bjetsC{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("lead_jet_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("lead_bjet_pt{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("delta_phi_j_met{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("leptoncharge{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("nhad_taus{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("lead_tau_pt{}".format(self.syst_suffix), -99)
+            
+            self.out.fillBranch("w_muon_SF{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("w_muon_SFUp{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("w_muon_SFDown{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("w_electron_SF{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("w_electron_SFUp{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("w_electron_SFDown{}".format(self.syst_suffix), -99)
+            self.out.fillBranch("w_btag_SF{}".format(self.syst_suffix),-99)
+            return True
