@@ -621,7 +621,7 @@ class DiHiggsProducer(Module):
                     w_electron_SF     *=  good_leptons[0].SF
                     w_electron_SFUp   *= (good_leptons[0].SF + good_leptons[0].SFErr)
                     w_electron_SFDown *= (good_leptons[0].SF - good_leptons[0].SFErr)
-                if abs(good_leptons[0].pdgId) == 11:
+                if abs(good_leptons[1].pdgId) == 11:
                     w_electron_SF     *=  good_leptons[1].SF
                     w_electron_SFUp   *= (good_leptons[1].SF + good_leptons[1].SFErr)
                     w_electron_SFDown *= (good_leptons[1].SF - good_leptons[1].SFErr)

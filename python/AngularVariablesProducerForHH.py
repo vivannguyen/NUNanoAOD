@@ -358,11 +358,11 @@ class AngularVariablesProducerForHH(Module):
             _trail_Zjet_pt = float(getattr(event,"trailing_jet_pt{}".format(self.syst_suffix)))
             _trail_Zjet_eta = float(getattr(event,"trailing_jet_eta{}".format(self.syst_suffix)))
             _trail_Zjet_phi = float(getattr(event,"trailing_jet_phi{}".format(self.syst_suffix)))
-            
+
             electrons = list(Collection(event, "Electron"))
             muons = list(Collection(event, "Muon"))
             jets = list(Collection(event, "Jet"))
-            
+
             Higgsbb_cand_p4 = ROOT.TLorentzVector()
             HiggsZZ_cand_p4 = ROOT.TLorentzVector()
             HiggsZjet_cand_p4 = ROOT.TLorentzVector()

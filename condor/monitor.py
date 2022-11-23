@@ -3,7 +3,6 @@ import argparse
 import glob
 import logging
 from termcolor import colored
-import commands
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -24,7 +23,7 @@ def main():
             jobs_dir = '_'.join(['jobs', options.tag, sample_name])
 
             njobs = len(open(jobs_dir + "/" + "inputfiles.dat").readlines())
-            nfile = len(list(glob.glob("/eos/cms/store/group/phys_exotica/monoZ/{}/{}/*.root".format(options.tag, sample_name))))
+            nfile = len(list(glob.glob("/eos/cms/store/group/phys_higgs/HiggsExo/HH_bbZZ_bbllqq/test/{}/{}/*.root".format(options.tag, sample_name))))
 
             #for file in list(glob.glob(jobs_dir + '/*.log')):
             #    jobid = os.path.basename(file).split('.log')
