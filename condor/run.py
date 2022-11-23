@@ -6,6 +6,7 @@ import subprocess
 import shutil
 import time
 from termcolor import colored
+import json
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -29,7 +30,7 @@ echo "+ CMSSW_BASE  = $CMSSW_BASE"
 echo "+ PYTHON_PATH = $PYTHON_PATH"
 echo "+ PWD         = $PWD"
 echo "----- Found Proxy in: $X509_USER_PROXY"
-python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=$2
+python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://xrootd-cms.infn.it/$2
 echo "----- transfert output to eos :"
 xrdcp -s -f tree_$1.root {eosdir}
 echo "----- directory after running :"
@@ -39,6 +40,7 @@ echo " ------ THE END (everyone dies !) ----- "
 
 condor_TEMPLATE = """
 request_disk          = 10000000
+request_memory          = 15000
 executable            = {jobdir}/script.sh
 arguments             = $(ProcId) $(jobid)
 transfer_input_files  = {transfer_file}
@@ -84,7 +86,7 @@ def main():
     home_base  = os.environ['HOME']
     proxy_copy = os.path.join(home_base,proxy_base)
     cmssw_base = os.environ['CMSSW_BASE']
-    eosbase = "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/output/{tag}/{sample}/"
+    eosbase = "/eos/cms/store/group/phys_higgs/HiggsExo/HH_bbZZ_bbllqq/test/{tag}/{sample}/"
 
     print proxy_copy
 
@@ -111,11 +113,31 @@ def main():
             if os.WEXITSTATUS(status) == 0:
                 redone_proxy = True
         shutil.copyfile('/tmp/'+proxy_base,  proxy_copy)
-
-
+   
+    sample_files = {}
     with open(options.input, 'r') as stream:
         for sample in stream.read().split('\n'):
             if '#' in sample: continue
+            if len(sample.split('/')) <= 1: continue
+            _name = sample.split('/')[1] if options.isMC else '_'.join(sample.split('/')[1:3])
+            logging.info(" -- sample name: "+ _name)
+
+            _files = subprocess.check_output(['dasgoclient','--query',"file dataset={}".format(sample)])
+            _files = _files.split('\n')
+            _files.remove('')
+            time.sleep(15)
+            if _name in sample_files.keys():
+                sample_files[_name] += _files
+            else:
+                sample_files[_name] = _files
+    with open('inputfiles.json', 'w') as f:
+        json.dump(sample_files, f)
+ #   print(sample_files)
+ #   exit()
+ #   with open(options.input, 'r') as stream:
+    for sample_name in sample_files:
+ #       for sample in stream.read().split('\n'):
+ #           if '#' in sample: continue
             # check if dataset in catalog
             #if options.isMC:
             #    if options.era=="2016":
@@ -129,12 +151,12 @@ def main():
             #    if not any(sample in s for s in catalog.keys()):
             #        logging.warning(colored('dataset not found: {}, skipped...'.format(sample), "red"))
             #        continue
-            if len(sample.split('/')) <= 1: continue
-            sample_name = sample.split("/")[1] if options.isMC else '_'.join(sample.split("/")[1:3])
-            jobs_dir = '_'.join(['jobs', options.tag, sample_name])
-            logging.info("-- sample_name : " + sample)
- 
-            if os.path.isdir(jobs_dir):
+ #           if len(sample.split('/')) <= 1: continue
+ #           sample_name = sample.split("/")[1] if options.isMC else '_'.join(sample.split("/")[1:3])
+        jobs_dir = '_'.join(['jobs', options.tag, sample_name])
+        logging.info("-- sample_name : " + sample_name)
+
+        if os.path.isdir(jobs_dir):
 #                if not options.force:
 #                    logging.error(" " + jobs_dir + " already exist !")
 #                    continue
@@ -142,82 +164,82 @@ def main():
 #                    logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
 #                    shutil.rmtree(jobs_dir)
 #                    os.mkdir(jobs_dir)
-                if  "ext" not in sample.split("/")[2]:
-                     if not options.force:
-                         logging.error(" " + jobs_dir + " already exist !")
-                         continue
-                     else:
-                         logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
-                         shutil.rmtree(jobs_dir)
-                         os.mkdir(jobs_dir)
-            else:
-                os.mkdir(jobs_dir)
+                #if  "ext" not in sample.split("/")[2]:
+                if not options.force:
+                    logging.error(" " + jobs_dir + " already exist !")
+                    continue
+                else:
+                    logging.warning(" " + jobs_dir + " already exists, forcing its deletion!")
+                    shutil.rmtree(jobs_dir)
+                    os.mkdir(jobs_dir)
+        else:
+            os.mkdir(jobs_dir)
 
-            if not options.submit:
-                # ---- getting the list of file for the dataset
-                sample_files = subprocess.check_output(
-                    ['dasgoclient','--query',"file dataset={}".format(sample)]
-                )
-                time.sleep(15)
-                with open(os.path.join(jobs_dir, "inputfiles.dat"), 'w') as infiles:
-                    infiles.write(sample_files)
-                    infiles.close()
-            time.sleep(10)
-            eosoutdir =  eosbase.format(tag=options.tag,sample=sample_name)
-            # crete a directory on eos
-            if '/eos/cms' in eosoutdir:
-                eosoutdir = eosoutdir.replace('/eos/cms', 'root://eoscms.cern.ch/')
-                os.system("eos mkdir -p {}".format(eosoutdir.replace('root://eoscms.cern.ch/','')))
-            else:
-                os.system("mkdir -p {}".format(eosoutdir))
+        if not options.submit:
+#                # ---- getting the list of file for the dataset
+#                sample_files = subprocess.check_output(
+#                    ['dasgoclient','--query',"file dataset={}".format(sample)]
+#                )
+#                time.sleep(15)
+            with open(os.path.join(jobs_dir, "inputfiles.dat"), 'w') as infiles:
+                infiles.write('\n'.join(sample_files[sample_name]))
+                infiles.close()
+        time.sleep(10)
+        eosoutdir =  eosbase.format(tag=options.tag,sample=sample_name)
+        # crete a directory on eos
+        if '/eos/cms' in eosoutdir:
+            eosoutdir = eosoutdir.replace('/eos/cms', 'root://eoscms.cern.ch/')
+            os.system("eos mkdir -p {}".format(eosoutdir.replace('root://eoscms.cern.ch/','')))
+        else:
+            os.system("mkdir -p {}".format(eosoutdir))
 #                raise NameError(eosoutdir)
 
-            with open(os.path.join(jobs_dir, "script.sh"), "w") as scriptfile:
-                script = script_TEMPLATE.format(
-                    proxy=proxy_copy,
-                    cmssw_base=cmssw_base,
-                    ismc=options.isMC,
-                    era=options.era,
-                    eosdir=eosoutdir
-                )
-                scriptfile.write(script)
-                scriptfile.close()
-            os.system("chmod +x {}".format(os.path.join(jobs_dir, "script.sh")))
-
-            with open(os.path.join(jobs_dir, "condor.sub"), "w") as condorfile:
-                condor = condor_TEMPLATE.format(
-                    transfer_file= ",".join([
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/condor_Run2_proc.py",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/combineHLT_Run2.yaml",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/data/xsections_2016.yaml",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/data/xsections_2017.yaml",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/data/xsections_2018.yaml",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/keep_and_drop.txt",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/keep_and_drop_post.txt",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt",
-                        "/nfs/dust/cms/user/lidrychj/NanoAOD/CMSSW_10_6_4/src/PhysicsTools/MonoZ/condor/haddnano.py"
-                    ]),
-                    jobdir=jobs_dir,
-                    queue=options.queue
-                )
-                condorfile.write(condor)
-                condorfile.close()
-            if options.dryrun:
-                continue
-
-            htc = subprocess.Popen(
-                "condor_submit " + os.path.join(jobs_dir, "condor.sub"),
-                shell  = True,
-                stdin  = subprocess.PIPE,
-                stdout = subprocess.PIPE,
-                stderr = subprocess.PIPE,
-                close_fds=True
+        with open(os.path.join(jobs_dir, "script.sh"), "w") as scriptfile:
+            script = script_TEMPLATE.format(
+                proxy=proxy_copy,
+                cmssw_base=cmssw_base,
+                ismc=options.isMC,
+                era=options.era,
+                eosdir=eosoutdir
             )
-            out, err = htc.communicate()
-            exit_status = htc.returncode
-            logging.info("condor submission status : {}".format(exit_status))
+            scriptfile.write(script)
+            scriptfile.close()
+        os.system("chmod +x {}".format(os.path.join(jobs_dir, "script.sh")))
+
+        with open(os.path.join(jobs_dir, "condor.sub"), "w") as condorfile:
+            condor = condor_TEMPLATE.format(
+                transfer_file= ",".join([
+                    "../condor_Run2_proc.py",
+                    "../combineHLT_Run2.yaml",
+                    "../../data/xsections_2016.yaml",
+                    "../../data/xsections_2017.yaml",
+                    "../../data/xsections_2018.yaml",
+                    "../keep_and_drop.txt",
+                    "../keep_and_drop_post.txt",
+                    "../Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt",
+                    "../Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt",
+                    "../Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt",
+                    "../haddnano.py"
+                ]),
+                jobdir=jobs_dir,
+                queue=options.queue
+            )
+            condorfile.write(condor)
+            condorfile.close()
+        if options.dryrun:
+            continue
+
+        htc = subprocess.Popen(
+            "condor_submit " + os.path.join(jobs_dir, "condor.sub"),
+            shell  = True,
+            stdin  = subprocess.PIPE,
+            stdout = subprocess.PIPE,
+            stderr = subprocess.PIPE,
+            close_fds=True
+        )
+        out, err = htc.communicate()
+        exit_status = htc.returncode
+        logging.info("condor submission status : {}".format(exit_status))
 
 if __name__ == "__main__":
     main()

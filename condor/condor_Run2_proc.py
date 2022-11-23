@@ -27,7 +27,7 @@ from PhysicsTools.MonoZ.GenTopProducer import *
 from PhysicsTools.MonoZ.PhiXYCorrection import *
 from PhysicsTools.MonoZ.BtagEventWeightProducer import *
 from PhysicsTools.MonoZ.TriggerSFProducerForHH import *
-from PhysicsTools.MonoZ.AngularVariablesProducerForHH import *
+#from PhysicsTools.MonoZ.AngularVariablesProducerForHH import *
 from PhysicsTools.MonoZ.BDTdiscriminantProducerForHH import *
 #from PhysicsTools.MonoZ.GenMonoZProducer import *
 import argparse
@@ -36,7 +36,7 @@ parser = argparse.ArgumentParser("")
 parser.add_argument('-isMC'   , '--isMC'   , type=int, default=1     , help="")
 parser.add_argument('-jobNum' , '--jobNum' , type=int, default=1     , help="")
 parser.add_argument('-era'    , '--era'    , type=str, default="2018", help="")
-parser.add_argument('-doSyst' , '--doSyst' , type=int, default=1     , help="")
+parser.add_argument('-doSyst' , '--doSyst' , type=int, default=0     , help="")
 parser.add_argument('-infile' , '--infile' , type=str, default=None  , help="")
 parser.add_argument('-dataset', '--dataset', type=str, default="X"   , help="")
 parser.add_argument('-nevt'   , '--nevt'   , type=str, default=-1    , help="")
@@ -174,13 +174,14 @@ if options.isMC:
       combineHLT = yaml.safe_load(open("combineHLT_Run2.yaml"))
    except yaml.YAMLError as exc:
       print(exc)
+   """
    if options.era=="2016":
       pre_selection = pre_selection + " && (" + combineHLT.get("Run2016.MC", "") + ")"
    if options.era=="2017":
       pre_selection = pre_selection + " && (" + combineHLT.get("Run2017.MC", "") + ")"
    if options.era=="2018":
       pre_selection = pre_selection + " && (" + combineHLT.get("Run2018.MC", "") + ")"
-
+   """
    if options.era=="2016":
       modules_era.append(puAutoWeight_2016())
       modules_era.append(PrefCorr())
@@ -210,7 +211,7 @@ if options.isMC:
    # modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=''))
    modules_era.append(DiHiggsProducer(isMC=options.isMC, era=str(options.era), do_syst=0, syst_var=''))
 
-   modules_era.append(AngularVariablesProducerForHH())
+#   modules_era.append(AngularVariablesProducerForHH())
 #   modules_era.append(GenTopProducer())
 #   modules_era.append(BDTdiscriminantProducerForHH(era=str(options.era), do_syst=0, syst_var=''))
    if options.era=="2016":
@@ -239,7 +240,7 @@ if options.isMC:
 	    # if "jesTotal" in sys and options.doSyst==1: modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=sys+var))
 	    # if "jer" in sys and options.doSyst==1: modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=sys+var))
             modules_era.append(DiHiggsProducer(options.isMC, str(options.era), do_syst=options.doSyst, syst_var=sys+var))
-            modules_era.append(AngularVariablesProducerForHH(do_syst=options.doSyst, syst_var=sys+var))
+ #           modules_era.append(AngularVariablesProducerForHH(do_syst=options.doSyst, syst_var=sys+var))
 
             if options.era=="2016":
                modules_era.append(TriggerSF_2016(syst=sys+var))
@@ -308,7 +309,7 @@ else:
 
 #   modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=''))
    modules_era.append(DiHiggsProducer  (isMC=options.isMC, era=str(options.era), do_syst=0, syst_var=''))
-   modules_era.append(AngularVariablesProducerForHH())
+#   modules_era.append(AngularVariablesProducerForHH())
    if options.era=="2016":
        options.json = "Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
    if options.era=="2017":

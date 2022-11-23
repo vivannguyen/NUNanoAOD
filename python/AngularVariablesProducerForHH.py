@@ -349,7 +349,7 @@ class AngularVariablesProducerForHH(Module):
         _lead_Hjet_phi = float(getattr(event,"leading_Hbb_phi{}".format(self.syst_suffix)))
         _trail_Hjet_pt = float(getattr(event,"trailing_Hbb_pt{}".format(self.syst_suffix)))
         _trail_Hjet_eta = float(getattr(event,"trailing_Hbb_eta{}".format(self.syst_suffix)))
-         _trail_Hjet_phi = float(getattr(event,"trailing_Hbb_phi{}".format(self.syst_suffix)))
+        _trail_Hjet_phi = float(getattr(event,"trailing_Hbb_phi{}".format(self.syst_suffix)))
         # Z->qq
         _lead_Zjet_pt = float(getattr(event,"leading_jet_pt{}".format(self.syst_suffix)))
         _lead_Zjet_eta = float(getattr(event,"leading_jet_eta{}".format(self.syst_suffix)))

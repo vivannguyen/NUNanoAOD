@@ -577,7 +577,7 @@ class DiHiggsProducer(Module):
                     w_electron_SF     *=  good_leptons[0].SF
                     w_electron_SFUp   *= (good_leptons[0].SF + good_leptons[0].SFErr)
                     w_electron_SFDown *= (good_leptons[0].SF - good_leptons[0].SFErr)
-                if abs(good_leptons[0].pdgId) == 11:
+                if abs(good_leptons[1].pdgId) == 11:
                     w_electron_SF     *=  good_leptons[1].SF
                     w_electron_SFUp   *= (good_leptons[1].SF + good_leptons[1].SFErr)
                     w_electron_SFDown *= (good_leptons[1].SF - good_leptons[1].SFErr)
@@ -1149,7 +1149,8 @@ class DiHiggsProducer(Module):
 
         # Let remove the negative categories with no obvious meaning meaning
         # This will reduce the size of most of the bacground and data
-        if (lep_category > 0 and event_category > 0 and num_jets >= 4  and len(good_leptons) == 2 and nextra_leptons == 0 and event_category < 10 and len(had_taus)==0): 
+        #if (lep_category > 0 and event_category > 0 and num_jets >= 4  and len(good_leptons) == 2 and nextra_leptons == 0 and event_category < 10 and len(had_taus)==0): 
+        if (lep_category > 0 and event_category > 0 and len(good_leptons) == 2 and nextra_leptons == 0 and event_category < 10):
             return True
         else:
             return False
