@@ -27,7 +27,7 @@ from PhysicsTools.MonoZ.GenTopProducer import *
 from PhysicsTools.MonoZ.PhiXYCorrection import *
 from PhysicsTools.MonoZ.BtagEventWeightProducer import *
 from PhysicsTools.MonoZ.TriggerSFProducerForHH import *
-#from PhysicsTools.MonoZ.AngularVariablesProducerForHH import *
+from PhysicsTools.MonoZ.AngularVariablesProducerForHH import *
 from PhysicsTools.MonoZ.BDTdiscriminantProducerForHH import *
 from PhysicsTools.MonoZ.StoreEventsProducerForHH import *
 #from PhysicsTools.MonoZ.GenMonoZProducer import *
@@ -214,8 +214,6 @@ if options.isMC:
 
    modules_era.append(AngularVariablesProducerForHH())
 
-   if options.era=="2016":
-
    if "TTTo2L2Nu" in options.dataset or "TTToHadronic" in options.dataset or "TTToSemiLeptonic" in options.dataset or "TTJets" in options.dataset or "TT_" in options.dataset:
       modules_era.append(GenTopProducer())
 
@@ -305,7 +303,7 @@ else:
 
 #   modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=''))
    modules_era.append(DiHiggsProducer  (isMC=options.isMC, era=str(options.era), do_syst=0, syst_var=''))
-#   modules_era.append(AngularVariablesProducerForHH())
+   modules_era.append(AngularVariablesProducerForHH())
    if options.era=="2016":
        options.json = "Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
    if options.era=="2017":
