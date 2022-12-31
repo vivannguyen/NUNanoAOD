@@ -175,14 +175,14 @@ if options.isMC:
       combineHLT = yaml.safe_load(open("combineHLT_Run2.yaml"))
    except yaml.YAMLError as exc:
       print(exc)
-   """
+
    if options.era=="2016":
       pre_selection = pre_selection + " && (" + combineHLT.get("Run2016.MC", "") + ")"
    if options.era=="2017":
       pre_selection = pre_selection + " && (" + combineHLT.get("Run2017.MC", "") + ")"
    if options.era=="2018":
       pre_selection = pre_selection + " && (" + combineHLT.get("Run2018.MC", "") + ")"
-   """
+
    if options.era=="2016":
       modules_era.append(puAutoWeight_2016())
       modules_era.append(PrefCorr())

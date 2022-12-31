@@ -48,20 +48,20 @@ class AngularVariablesProducerForHH(Module):
         self.out.branch("dR_b1b2{}".format(self.syst_suffix), "F")
 
         #some other variables
-        self.out.branch("delta_phi_ll{}".format(self.syst_suffix), "F")
-        self.out.branch("delta_eta_ll{}".format(self.syst_suffix), "F")
-        self.out.branch("delta_R_ll{}".format(self.syst_suffix), "F")
-        self.out.branch("delta_phi_jj{}".format(self.syst_suffix), "F")
-        self.out.branch("delta_eta_jj{}".format(self.syst_suffix), "F")
-        self.out.branch("delta_R_jj{}".format(self.syst_suffix), "F")
+#        self.out.branch("delta_phi_ll{}".format(self.syst_suffix), "F")
+#        self.out.branch("delta_eta_ll{}".format(self.syst_suffix), "F")
+#        self.out.branch("delta_R_ll{}".format(self.syst_suffix), "F")
+#        self.out.branch("delta_phi_jj{}".format(self.syst_suffix), "F")
+#        self.out.branch("delta_eta_jj{}".format(self.syst_suffix), "F")
+#        self.out.branch("delta_R_jj{}".format(self.syst_suffix), "F")
 
         # Helicity angles in the Collins-Sopper frame
-        self.out.branch("cosThetaCS{}".format(self.syst_suffix),"F")
-        self.out.branch("cosThetabHbb{}".format(self.syst_suffix),"F")
-        self.out.branch("cosThetaZjjHzz{}".format(self.syst_suffix),"F")
-        self.out.branch("cosThetaZllHzz{}".format(self.syst_suffix),"F")
-        self.out.branch("phi1{}".format(self.syst_suffix),"F")
-        self.out.branch("phi1_Zjj{}".format(self.syst_suffix),"F")
+#        self.out.branch("cosThetaCS{}".format(self.syst_suffix),"F")
+#        self.out.branch("cosThetabHbb{}".format(self.syst_suffix),"F")
+#        self.out.branch("cosThetaZjjHzz{}".format(self.syst_suffix),"F")
+#        self.out.branch("cosThetaZllHzz{}".format(self.syst_suffix),"F")
+#        self.out.branch("phi1{}".format(self.syst_suffix),"F")
+#        self.out.branch("phi1_Zjj{}".format(self.syst_suffix),"F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -450,12 +450,12 @@ class AngularVariablesProducerForHH(Module):
             self.out.fillBranch("dR_j2b1{}".format(self.syst_suffix), dR_j2b1)
             self.out.fillBranch("dR_j2b2{}".format(self.syst_suffix), dR_j2b2)
             self.out.fillBranch("dR_b1b2{}".format(self.syst_suffix), dR_b1b2)
-            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), cosThetaStar_CS)
-            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),cosTheta[1])        
-            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix),cosTheta[2])
-            self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix),cosTheta[3])
-            self.out.fillBranch("phi1{}".format(self.syst_suffix),Phi[-1])
-            self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix),PhiZZ[-1])
+#            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), cosThetaStar_CS)
+#            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),cosTheta[1])        
+#            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix),cosTheta[2])
+#            self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix),cosTheta[3])
+#            self.out.fillBranch("phi1{}".format(self.syst_suffix),Phi[-1])
+#            self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix),PhiZZ[-1])
 
         else:
             self.out.fillBranch("dR_l1j1{}".format(self.syst_suffix), -99)
@@ -472,12 +472,12 @@ class AngularVariablesProducerForHH(Module):
             self.out.fillBranch("dR_j2b1{}".format(self.syst_suffix), -99)
             self.out.fillBranch("dR_j2b2{}".format(self.syst_suffix), -99)
             self.out.fillBranch("dR_b1b2{}".format(self.syst_suffix), -99)
-            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), -99)
-            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),-99)
-            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix), -99)
-            self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix), -99)
-            self.out.fillBranch("phi1{}".format(self.syst_suffix), -99)
-            self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix), -99)
+#            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), -99)
+#            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),-99)
+#            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix), -99)
+#            self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix), -99)
+#            self.out.fillBranch("phi1{}".format(self.syst_suffix), -99)
+#            self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix), -99)
 
         return True
 
