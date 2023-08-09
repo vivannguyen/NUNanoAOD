@@ -18,7 +18,6 @@ drop FatJet*
 drop GenDressedLepton*
 drop GenJetAK8*
 drop GenMET*
-drop GenJet*
 drop GenVisTau*
 drop Generator*
 drop HTXS*

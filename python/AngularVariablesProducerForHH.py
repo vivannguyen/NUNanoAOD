@@ -12,10 +12,11 @@ import PhysicsTools.NanoAODTools.postprocessing.tools as tk
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 class AngularVariablesProducerForHH(Module):
-    def __init__(self, do_syst=False, syst_var='',isMC=False):
+    def __init__(self, do_syst=False, signal='GF', syst_var='', isMC=False):
         self.do_syst = do_syst
         self.syst_var = syst_var
         self.isMC = isMC
+        self.signal = signal
         if self.syst_var !='':
           self.syst_suffix = '_sys_' + self.syst_var if self.do_syst else ''
         else:
@@ -47,6 +48,13 @@ class AngularVariablesProducerForHH(Module):
         self.out.branch("dR_j2b2{}".format(self.syst_suffix), "F")
         self.out.branch("dR_b1b2{}".format(self.syst_suffix), "F")
 
+        if self.signal=='VBF':
+            self.out.branch("deta_goodjets_j1j2{}".format(self.syst_suffix), "F")
+            self.out.branch("dR_VBF_j1j2{}".format(self.syst_suffix), "F")
+            self.out.branch("zep_HH{}".format(self.syst_suffix), "F")
+            self.out.branch("zep_HiggsZZ{}".format(self.syst_suffix), "F")
+            self.out.branch("zep_Higgsbb{}".format(self.syst_suffix), "F")
+
         #some other variables
 #        self.out.branch("delta_phi_ll{}".format(self.syst_suffix), "F")
 #        self.out.branch("delta_eta_ll{}".format(self.syst_suffix), "F")
@@ -71,6 +79,7 @@ class AngularVariablesProducerForHH(Module):
         #cos theta star angle in the Collins Soper frame
         p1, p2, hh = ROOT.TLorentzVector(), ROOT.TLorentzVector(), ROOT.TLorentzVector()
         p1.SetPxPyPzE(0, 0,  6500., 6500)
+        p2.SetPxPyPzE(0, 0, -6500., 6500)
         p2.SetPxPyPzE(0, 0, -6500., 6500)
         hh = h1 + h2
         boost = ROOT.TVector3(- hh.BoostVector())
@@ -145,18 +154,18 @@ class AngularVariablesProducerForHH(Module):
         zz = Zj1 + Zj2 + ell1 + ell2
         zjj = Zj1 + Zj2
         zellell = ell1 + ell2
-        
+
         helicityThetas = []
-        
+
         ZZforBoost, BoostedZuu, BoostedZjj = ROOT.TLorentzVector(), ROOT.TLorentzVector(), ROOT.TLorentzVector()
         ZZforBoost.SetPtEtaPhiE(zz.Pt(), zz.Eta(), zz.Phi(), zz.Energy())
-        
+
         BoostedZuu.SetPtEtaPhiE(zellell.Pt(), zellell.Eta(), zellell.Phi(), zellell.Energy())
         helicityThetas.append( HelicityCosTheta(ZZforBoost, BoostedZuu) ) # CosThetaStar_Zuu
-        
+
         BoostedZjj.SetPtEtaPhiE(zjj.Pt(), zjj.Eta(), zjj.Phi(), zjj.Energy())
         helicityThetas.append( HelicityCosTheta(ZZforBoost, BoostedZjj) ) # CosThetaStar_Zjj
-        
+
         return helicityThetas
 
     def CosThetaAngles_ZZ(self,Zj1, Zj2, ell1, ell2) :
@@ -327,9 +336,12 @@ class AngularVariablesProducerForHH(Module):
                 dsignhgg2 = 0
             vPhi.append( dsignhgg2 * math.acos(zz2prime.Dot(vnorm[1])) )
 
-        return vPhi    
+        return vPhi
 
-
+    # Calculate zeppenfeld variable
+    def zeppenfeld(self, eta_obj, eta_j1, eta_j2) :
+        zep = eta_obj - (eta_j1 + eta_j2)/2
+        return zep
 
 
     def analyze(self, event):
@@ -359,6 +371,17 @@ class AngularVariablesProducerForHH(Module):
             _trail_Zjet_eta = float(getattr(event,"trailing_jet_eta{}".format(self.syst_suffix)))
             _trail_Zjet_phi = float(getattr(event,"trailing_jet_phi{}".format(self.syst_suffix)))
 
+            # VBF jets
+            if self.signal=='VBF':
+#                _lead_VBFjet_pt = float(getattr(event,"leading_VBFjet_pt{}".format(self.syst_suffix)))
+                _lead_VBFjet_eta = float(getattr(event,"leading_VBFjet_eta{}".format(self.syst_suffix)))
+                _lead_VBFjet_phi = float(getattr(event,"leading_VBFjet_phi{}".format(self.syst_suffix)))
+#                _trail_VBFjet_pt = float(getattr(event,"trailing_VBFjet_pt{}".format(self.syst_suffix)))
+                _trail_VBFjet_eta = float(getattr(event,"trailing_VBFjet_eta{}".format(self.syst_suffix)))
+                _trail_VBFjet_phi = float(getattr(event,"trailing_VBFjet_phi{}".format(self.syst_suffix)))
+                _lead_goodjet_eta = float(getattr(event,"leading_goodjet_eta{}".format(self.syst_suffix)))
+                _trail_goodjet_eta = float(getattr(event,"trailing_goodjet_eta{}".format(self.syst_suffix)))
+
             electrons = list(Collection(event, "Electron"))
             muons = list(Collection(event, "Muon"))
             jets = list(Collection(event, "Jet"))
@@ -371,7 +394,21 @@ class AngularVariablesProducerForHH(Module):
             Zjet_cand_0 = ROOT.TLorentzVector()
             Zlep_cand_0 = ROOT.TLorentzVector()
             Higgs_cand_1 = ROOT.TLorentzVector()
+            HH_cand = ROOT.TLorentzVector()
             Higgsbb_candidate = []
+            HiggsZjet_candidate = []
+            HiggsZlep_candidate = []
+
+            HiggsZjet_candidate = []
+            HiggsZlep_candidate = []
+
+            Higgsbb_candidate = []
+            HiggsZjet_candidate = []
+            HiggsZlep_candidate = []
+
+            HiggsZjet_candidate = []
+            HiggsZlep_candidate = []
+
             HiggsZjet_candidate = []
             HiggsZlep_candidate = []
 
@@ -393,7 +430,7 @@ class AngularVariablesProducerForHH(Module):
                 if tk.deltaR( _trail_lepton_eta,_trail_lepton_phi, ele.eta, ele.phi,) < 0.0001:
                     HiggsZlep_candidate.append(ele)
                     HiggsZlep_candidate[-1].pt = _trail_lepton_pt
-      
+
             for jet in jets:
                 if tk.deltaR(_lead_Zjet_eta,_lead_Zjet_phi,jet.eta,jet.phi,) < 0.0001:
                     HiggsZjet_candidate.append(jet)
@@ -409,10 +446,10 @@ class AngularVariablesProducerForHH(Module):
                     Higgsbb_candidate[-1].pt = _trail_Hjet_pt
 
             Higgs_cand_0 = Higgsbb_candidate[0].p4() + Higgsbb_candidate[1].p4()
-            Zlep_cand_0 = HiggsZlep_candidate[0].p4() + HiggsZlep_candidate[1].p4()       
+            Zlep_cand_0 = HiggsZlep_candidate[0].p4() + HiggsZlep_candidate[1].p4()
             Zjet_cand_0 = HiggsZjet_candidate[0].p4() + HiggsZjet_candidate[1].p4()
             Higgs_cand_1 = Zlep_cand_0 + Zjet_cand_0
-
+            HH_cand = Higgs_cand_0 + Higgs_cand_1
 
             #        dR_l1l2 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZlep_candidate[1].eta, HiggsZlep_candidate[1].phi,)
             dR_l1j1 = tk.deltaR(HiggsZlep_candidate[0].eta, HiggsZlep_candidate[0].phi, HiggsZjet_candidate[0].eta, HiggsZjet_candidate[0].phi,)
@@ -429,6 +466,13 @@ class AngularVariablesProducerForHH(Module):
             dR_j2b1 = tk.deltaR(HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi, Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi,)
             dR_j2b2 = tk.deltaR(HiggsZjet_candidate[1].eta, HiggsZjet_candidate[1].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
             dR_b1b2 = tk.deltaR(Higgsbb_candidate[0].eta, Higgsbb_candidate[0].phi, Higgsbb_candidate[1].eta, Higgsbb_candidate[1].phi,)
+
+            if self.signal=='VBF':
+                deta_goodjets_j1j2 = (_lead_goodjet_eta - _trail_goodjet_eta)
+                dR_VBF_j1j2 = tk.deltaR(_lead_VBFjet_eta, _lead_VBFjet_phi, _trail_VBFjet_eta, _trail_VBFjet_phi)
+                zep_HH = self.zeppenfeld(HH_cand.Eta(), _lead_VBFjet_eta, _trail_VBFjet_eta)
+                zep_HiggsZZ = self.zeppenfeld(Higgs_cand_0.Eta(), _lead_VBFjet_eta, _trail_VBFjet_eta)
+                zep_Higgsbb = self.zeppenfeld(Higgs_cand_1.Eta(), _lead_VBFjet_eta, _trail_VBFjet_eta)
 
             cosThetaStar_CS = self.getCosThetaStar_CS(Higgs_cand_0,Higgs_cand_1)
             cosTheta = self.CosThetaAngles(Higgsbb_candidate[0].p4(),Higgsbb_candidate[1].p4(),HiggsZjet_candidate[0].p4(),HiggsZjet_candidate[1].p4(),HiggsZlep_candidate[0].p4(),HiggsZlep_candidate[1].p4())
@@ -450,13 +494,19 @@ class AngularVariablesProducerForHH(Module):
             self.out.fillBranch("dR_j2b1{}".format(self.syst_suffix), dR_j2b1)
             self.out.fillBranch("dR_j2b2{}".format(self.syst_suffix), dR_j2b2)
             self.out.fillBranch("dR_b1b2{}".format(self.syst_suffix), dR_b1b2)
+
+            if self.signal=='VBF':
+                self.out.fillBranch("deta_goodjets_j1j2{}".format(self.syst_suffix), deta_goodjets_j1j2)
+                self.out.fillBranch("dR_VBF_j1j2{}".format(self.syst_suffix), dR_VBF_j1j2)
+                self.out.fillBranch("zep_HH{}".format(self.syst_suffix), zep_HH)
+                self.out.fillBranch("zep_HiggsZZ{}".format(self.syst_suffix), zep_HiggsZZ)
+                self.out.fillBranch("zep_Higgsbb{}".format(self.syst_suffix), zep_Higgsbb)
 #            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), cosThetaStar_CS)
 #            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),cosTheta[1])        
 #            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix),cosTheta[2])
 #            self.out.fillBranch("cosThetaZllHzz{}".format(self.syst_suffix),cosTheta[3])
 #            self.out.fillBranch("phi1{}".format(self.syst_suffix),Phi[-1])
 #            self.out.fillBranch("phi1_Zjj{}".format(self.syst_suffix),PhiZZ[-1])
-
         else:
             self.out.fillBranch("dR_l1j1{}".format(self.syst_suffix), -99)
             self.out.fillBranch("dR_l1j2{}".format(self.syst_suffix), -99)
@@ -472,6 +522,13 @@ class AngularVariablesProducerForHH(Module):
             self.out.fillBranch("dR_j2b1{}".format(self.syst_suffix), -99)
             self.out.fillBranch("dR_j2b2{}".format(self.syst_suffix), -99)
             self.out.fillBranch("dR_b1b2{}".format(self.syst_suffix), -99)
+
+            if self.signal=='VBF':
+                self.out.fillBranch("deta_goodjets_j1j2{}".format(self.syst_suffix), -99)
+                self.out.fillBranch("dR_VBF_j1j2{}".format(self.syst_suffix), -99)
+                self.out.fillBranch("zep_HH{}".format(self.syst_suffix), -99)
+                self.out.fillBranch("zep_HiggsZZ{}".format(self.syst_suffix), -99)
+                self.out.fillBranch("zep_Higgsbb{}".format(self.syst_suffix), -99)
 #            self.out.fillBranch("cosThetaCS{}".format(self.syst_suffix), -99)
 #            self.out.fillBranch("cosThetabHbb{}".format(self.syst_suffix),-99)
 #            self.out.fillBranch("cosThetaZjjHzz{}".format(self.syst_suffix), -99)

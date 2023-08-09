@@ -30,7 +30,7 @@ echo "+ CMSSW_BASE  = $CMSSW_BASE"
 echo "+ PYTHON_PATH = $PYTHON_PATH"
 echo "+ PWD         = $PWD"
 echo "----- Found Proxy in: $X509_USER_PROXY"
-python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://xrootd-cms.infn.it/$2
+python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://cmsxrootd.fnal.gov/$2
 echo "----- transfert output to eos :"
 xrdcp -s -f tree_$1.root {eosdir}
 echo "----- directory after running :"
@@ -40,7 +40,6 @@ echo " ------ THE END (everyone dies !) ----- "
 
 condor_TEMPLATE = """
 request_disk          = 10000000
-request_memory          = 15000
 executable            = {jobdir}/script.sh
 arguments             = $(ProcId) $(jobid)
 transfer_input_files  = {transfer_file}
@@ -66,6 +65,10 @@ should_transfer_files   = Yes
 
 queue jobid from {jobdir}/inputfiles.dat
 """
+
+# Additional TEMPLATE options
+#python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://xrootd-cms.infn.it/$2
+#request_memory          = 15000
 
 def main():
     parser = argparse.ArgumentParser(description='Famous Submitter')

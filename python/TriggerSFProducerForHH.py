@@ -101,7 +101,7 @@ class TriggerSFProducerForHH(Module):
 
 	searchbinx = -1
 	searchbiny = -1
-        if good_event == 1:
+        if good_event == 1 and lep_cat < 3:
             for xbin in range(1,nxBins+1):
                 if l1_pt > hist.GetXaxis().GetBinLowEdge(nxBins) + hist.GetXaxis().GetBinWidth(nxBins):
                     if lep_cat==1:
@@ -120,13 +120,18 @@ class TriggerSFProducerForHH(Module):
                     break
                 if l2_pt > hist.GetYaxis().GetBinLowEdge(ybin) and l2_pt < hist.GetYaxis().GetBinLowEdge(ybin) + hist.GetYaxis().GetBinWidth(ybin) :
                     searchbiny = ybin
-
             weight = hist.GetBinContent(searchbinx,searchbiny)
             self.out.fillBranch(self.name+"{}".format(self.syst_suffix), weight)
             if self.doSysVar:
                 weightError = hist.GetBinErrorUp(searchbinx,searchbiny)
                 self.out.fillBranch(self.name+"{}_Up".format(self.syst_suffix), weight+weightError)
                 weightError = hist.GetBinErrorLow(searchbinx,searchbiny)
+                self.out.fillBranch(self.name+"{}_Down".format(self.syst_suffix), weight-weightError)
+        # set trigger SF to 1 since eu category only for control region check
+        elif good_event == 1 and lep_cat==3:
+            self.out.fillBranch(self.name+"{}".format(self.syst_suffix), weight)
+            if self.doSysVar:
+                self.out.fillBranch(self.name+"{}_Up".format(self.syst_suffix), weight+weightError)
                 self.out.fillBranch(self.name+"{}_Down".format(self.syst_suffix), weight-weightError)
         else:
             self.out.fillBranch(self.name+"{}".format(self.syst_suffix), -99)
