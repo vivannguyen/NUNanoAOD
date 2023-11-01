@@ -14,6 +14,70 @@ DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
     br: 1
     kr: 1
     xsec: 362.2
+DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 967.7
+DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 362.2
+DYJetsToLL_Pt-0To50_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 5352.579
+DYJetsToLL_Pt-50To100_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 363.814
+DYJetsToLL_Pt-100To250_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 84.015
+DYJetsToLL_Pt-250To400_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 3.228
+DYJetsToLL_Pt-400To650_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 0.436
+DYJetsToLL_Pt-650ToInf_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 0.041
+DY1JetsToLL_M-50_LHEZpT_50-150_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 316.6
+DY1JetsToLL_M-50_LHEZpT_150-250_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 9.543
+DY1JetsToLL_M-50_LHEZpT_250-400_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 1.098
+DY1JetsToLL_M-50_LHEZpT_400-inf_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 0.1193
+DY2JetsToLL_M-50_LHEZpT_50-150_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 169.6
+DY2JetsToLL_M-50_LHEZpT_150-250_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 15.65
+DY2JetsToLL_M-50_LHEZpT_250-400_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 2.737
+DY2JetsToLL_M-50_LHEZpT_400-inf_TuneCP5_13TeV-amcnloFXFX-pythia8: 
+  br: 1.0
+  kr: 1.0
+  xsec: 0.4477
 WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8:
     br: 1
     kr: 1
@@ -514,508 +578,3 @@ TTToHadronic_TuneCP5_13TeV-powheg-pythia8:
     br: 1
     kr: 1
     xsec: 377.96
-=======
-DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8:
-    br: 1
-    kr: 1
-    xsec: 15810
-DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 5333
-DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 967.7
-DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 362.2
-WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 81.14
-WWTo4Q_NNPDF31_TuneCP5_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 47.73
-WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 11.64
-WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 3.295
-WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 6.368
-WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 5.078
-ZZTo4L_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.373
-ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 3.697
-ZZTo2Q2Nu_TuneCP5_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 4.560
-VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 13.94
-QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.332e+06
-QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 4.911e+06
-QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 6.417e+06
-QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.987e+06
-QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 3.665e+05
-QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 6.642e+04
-QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.655e+04
-QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.099e+03
-QCD_Pt-15to20_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 2.814e+06
-QCD_Pt-20to30_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 2.527e+06
-QCD_Pt-30to50_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.367e+06
-QCD_Pt-50to80_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 3.761e+05
-QCD_Pt-80to120_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 8.846e+04
-QCD_Pt-120to170_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 2.124e+04
-QCD_Pt-170to300_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 7.020e+03
-QCD_Pt-300to470_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 6.213e+02
-QCD_Pt-470to600_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 5.902e+01
-QCD_Pt-600to800_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.821e+01
-QCD_Pt-800to1000_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 3.280e+00
-QCD_Pt-1000toInf_MuEnrichedPt5_TuneCP5_13TeV_pythia8:
-    br: 1
-    kr: 1
-    xsec: 1.077e+00
-ST_s-channel_4f_hadronicDecays_TuneCP5_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 11.24
-ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8:
-    br: 1
-    kr: 1
-    xsec: 3.74
-ST_t-channel_top_5f_TuneCP5_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 119.7
-ST_t-channel_antitop_5f_TuneCP5_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 82.52
-ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 34.91
-ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 34.97
-TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 731.9
-WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 54487.2
-WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 9104.82
-WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
-    br: 1
-    kr: 1
-    xsec: 3376.8
-ggZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.006185
-GluGluHToBB_M125_13TeV_amcatnloFXFX_pythia8:
-    br: 1
-    kr: 1
-    xsec: 33.55
-GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8:
-    br: 1
-    kr: 1
-    xsec: 28.87
-GluGluZH_HToWW_M125_13TeV_powheg_pythia8_TuneCP5_PSweights:
-    br: 1
-    kr: 1
-    xsec: 0.0616
-ttHJetToNonbb_M125_TuneCP5_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.5051
-ttHJetTobb_M125_TuneCP5_13TeV_amcatnloFXFX_madspin_pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.5090
-VBF_HToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8:
-    br: 1
-    kr: 1
-    xsec: 3.935
-WminusH_HToZZTo4L_M125_13TeV_powheg2-minlo-HWJ_JHUGenV7011_pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.5409
-WplusH_HToZZTo4L_M125_13TeV_powheg2-minlo-HWJ_JHUGenV7011_pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.8648
-ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.07924
-ZH_HToZZ_2LFilter_M125_13TeV_powheg2-minlo-HZJ_JHUGenV7011_pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.7927
-ttHTobb_M125_TuneCP5_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.5269
-ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.5638
-TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.2129
-TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.4303
-TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.2432
-TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8:
-    br: 1
-    kr: 1
-    xsec: 0.5104
-GluGluToRadionToHHTo2B2ZTo2L2J_M-260_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-270_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-300_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-350_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-400_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-450_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-500_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-550_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-600_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-650_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-750_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-800_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-900_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-1000_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-1250_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-1500_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-1750_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-2000_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-2500_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToRadionToHHTo2B2ZTo2L2J_M-3000_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-260_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-270_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-300_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-350_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-400_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-450_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-500_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-550_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-600_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-650_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-750_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-800_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-900_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-1000_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-1250_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-1500_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-1750_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-2000_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-2500_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToBulkGravitonToHHTo2B2ZTo2L2J_M-3000_narrow_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_SM_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_1_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_2_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_3_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_4_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_5_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_6_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_7_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_8_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_9_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_10_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_11_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_12_TuneCP5_PSWeights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_1_C2V_1_C3_1_dipoleRecoilOff-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_1_C2V_1_C3_2_dipoleRecoilOff-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_1_C2V_0_C3_1_dipoleRecoilOff-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_1_C2V_1_C3_0_dipoleRecoilOff-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_0_5_C2V_1_C3_1_dipoleRecoilOff-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_1_5_C2V_1_C3_1_dipoleRecoilOff-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_1_C2V_1_C3_1_dipoleRecoilOn-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-VBFHHTo2B2ZTo2L2J_CV_1_C2V_2_C3_1_dipoleRecoilOn-TuneCP5_PSweights_13TeV-madgraph-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_cHHH0_TuneCP5_PSWeights_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_cHHH1_TuneCP5_PSWeights_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_cHHH2p45_TuneCP5_PSWeights_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1
-GluGluToHHTo2B2ZTo2L2J_node_cHHH5_TuneCP5_PSWeights_13TeV-powheg-pythia8:
-    br: 1
-    kr: 1
-    xsec: 1

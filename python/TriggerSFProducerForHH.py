@@ -53,6 +53,8 @@ class TriggerSFProducerForHH(Module):
             lep_cat = int(getattr(event,"lep_category{}".format(self.syst_suffix)))
         if hasattr(event,"event_category{}".format(self.syst_suffix)):
             ev_cat = int(getattr(event,"event_category{}".format(self.syst_suffix)))
+        if hasattr(event,"good_event{}".format(self.syst_suffix)):
+            good_event = int(getattr(event,"good_event{}".format(self.syst_suffix)))
         if lep_cat < 1 :
             l1_pt = 0
             l1_eta = 0
@@ -69,25 +71,26 @@ class TriggerSFProducerForHH(Module):
         weight = 1
         weightError = 0
 
-
         if lep_cat==1:# or lep_cat==5 or lep_cat==7 : #these are MM. MML and MMLL lepton categories
-	    if l1_eta <= 1.5 and l2_eta <= 1.5:
-	    	hist = self.loadHisto(self.targetfile,"muon-BB")
-            elif l1_eta >= 1.5 and l2_eta <= 1.5:
-                hist = self.loadHisto(self.targetfile,"muon-EB")
-            elif l1_eta <= 1.5 and l2_eta >= 1.5:
-                hist = self.loadHisto(self.targetfile,"muon-BE")
-            elif l1_eta >= 1.5 and l2_eta >= 1.5:
-                hist = self.loadHisto(self.targetfile,"muon-EE")
+            hist = self.loadHisto(self.targetfile,"muon-AA") # trigger SF are not eta dependent because of low stats
+#	    if l1_eta <= 1.5 and l2_eta <= 1.5:
+#	    	hist = self.loadHisto(self.targetfile,"muon-BB")
+#            elif l1_eta >= 1.5 and l2_eta <= 1.5:
+#                hist = self.loadHisto(self.targetfile,"muon-EB")
+#            elif l1_eta <= 1.5 and l2_eta >= 1.5:
+#                hist = self.loadHisto(self.targetfile,"muon-BE")
+#            elif l1_eta >= 1.5 and l2_eta >= 1.5:
+#                hist = self.loadHisto(self.targetfile,"muon-EE")
         elif lep_cat==2:# or lep_cat==4 or lep_cat==6 : #these are EE. EEL and EELL lepton categories
-            if l1_eta <= 1.5 and l2_eta <= 1.5:
-                hist = self.loadHisto(self.targetfile,"electron-BB")
-            elif l1_eta >= 1.5 and l2_eta <= 1.5:
-                hist = self.loadHisto(self.targetfile,"electron-EB")
-            elif l1_eta <= 1.5 and l2_eta >= 1.5:
-                hist = self.loadHisto(self.targetfile,"electron-BE")
-            elif l1_eta >= 1.5 and l2_eta >= 1.5:
-                hist = self.loadHisto(self.targetfile,"electron-EE")
+            hist = self.loadHisto(self.targetfile,"electron-AA")
+#            if l1_eta <= 1.5 and l2_eta <= 1.5:
+#                hist = self.loadHisto(self.targetfile,"electron-BB")
+#            elif l1_eta >= 1.5 and l2_eta <= 1.5:
+#                hist = self.loadHisto(self.targetfile,"electron-EB")
+#            elif l1_eta <= 1.5 and l2_eta >= 1.5:
+#                hist = self.loadHisto(self.targetfile,"electron-BE")
+#            elif l1_eta >= 1.5 and l2_eta >= 1.5:
+#                hist = self.loadHisto(self.targetfile,"electron-EE")
 
         if lep_cat==1:
             nxBins = 8
@@ -98,42 +101,52 @@ class TriggerSFProducerForHH(Module):
 
 	searchbinx = -1
 	searchbiny = -1
-        for xbin in range(1,nxBins+1):
-            if l1_pt > hist.GetXaxis().GetBinLowEdge(nxBins) + hist.GetXaxis().GetBinWidth(nxBins):
-                if lep_cat==1:
-                    searchbinx = 8
-                else:
-                    searchbinx = 7
-                break
-            if l1_pt > hist.GetXaxis().GetBinLowEdge(xbin) and l1_pt < hist.GetXaxis().GetBinLowEdge(xbin) + hist.GetXaxis().GetBinWidth(xbin) :
-                searchbinx = xbin
-        for ybin in range(1,nyBins+1):
-            if l2_pt > hist.GetYaxis().GetBinLowEdge(nyBins) + hist.GetYaxis().GetBinWidth(nyBins):
-                if lep_cat==1:
-                    searchbiny = 7
-                else:
-                    searchbiny = 9
-                break
-            if l2_pt > hist.GetYaxis().GetBinLowEdge(ybin) and l2_pt < hist.GetYaxis().GetBinLowEdge(ybin) + hist.GetYaxis().GetBinWidth(ybin) :
-                searchbiny = ybin
-
-        weight = hist.GetBinContent(searchbinx,searchbiny)
-        self.out.fillBranch(self.name+"{}".format(self.syst_suffix), weight)
-        if self.doSysVar:
-            weightError = hist.GetBinErrorUp(searchbinx,searchbiny)
-            self.out.fillBranch(self.name+"{}_Up".format(self.syst_suffix), weight+weightError)
-            weightError = hist.GetBinErrorLow(searchbinx,searchbiny)
-            self.out.fillBranch(self.name+"{}_Down".format(self.syst_suffix), weight-weightError)
+        if good_event == 1 and lep_cat < 3:
+            for xbin in range(1,nxBins+1):
+                if l1_pt > hist.GetXaxis().GetBinLowEdge(nxBins) + hist.GetXaxis().GetBinWidth(nxBins):
+                    if lep_cat==1:
+                        searchbinx = 8
+                    else:
+                        searchbinx = 7
+                    break
+                if l1_pt > hist.GetXaxis().GetBinLowEdge(xbin) and l1_pt < hist.GetXaxis().GetBinLowEdge(xbin) + hist.GetXaxis().GetBinWidth(xbin) :
+                    searchbinx = xbin
+            for ybin in range(1,nyBins+1):
+                if l2_pt > hist.GetYaxis().GetBinLowEdge(nyBins) + hist.GetYaxis().GetBinWidth(nyBins):
+                    if lep_cat==1:
+                        searchbiny = 7
+                    else:
+                        searchbiny = 9
+                    break
+                if l2_pt > hist.GetYaxis().GetBinLowEdge(ybin) and l2_pt < hist.GetYaxis().GetBinLowEdge(ybin) + hist.GetYaxis().GetBinWidth(ybin) :
+                    searchbiny = ybin
+            weight = hist.GetBinContent(searchbinx,searchbiny)
+            self.out.fillBranch(self.name+"{}".format(self.syst_suffix), weight)
+            if self.doSysVar:
+                weightError = hist.GetBinErrorUp(searchbinx,searchbiny)
+                self.out.fillBranch(self.name+"{}_Up".format(self.syst_suffix), weight+weightError)
+                weightError = hist.GetBinErrorLow(searchbinx,searchbiny)
+                self.out.fillBranch(self.name+"{}_Down".format(self.syst_suffix), weight-weightError)
+        # set trigger SF to 1 since eu category only for control region check
+        elif good_event == 1 and lep_cat==3:
+            self.out.fillBranch(self.name+"{}".format(self.syst_suffix), weight)
+            if self.doSysVar:
+                self.out.fillBranch(self.name+"{}_Up".format(self.syst_suffix), weight+weightError)
+                self.out.fillBranch(self.name+"{}_Down".format(self.syst_suffix), weight-weightError)
+        else:
+            self.out.fillBranch(self.name+"{}".format(self.syst_suffix), -99)
+            self.out.fillBranch(self.name+"{}_Up".format(self.syst_suffix), -99)
+            self.out.fillBranch(self.name+"{}_Down".format(self.syst_suffix), -99)
 
         return True
 
 # define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
-TrigSF_2016 = "%s/src/PhysicsTools/MonoZ/data/TriggerSFs/trigger-2016.root" % os.environ['CMSSW_BASE']
+TrigSF_2016 = "%s/src/PhysicsTools/MonoZ/data/TriggerSFs/trigger-2016-miniISO.root" % os.environ['CMSSW_BASE']
 TriggerSF_2016 = lambda syst : TriggerSFProducerForHH(TrigSF_2016,verbose=False, doSysVar=True , syst_var=syst)
 
-TrigSF_2017 = "%s/src/PhysicsTools/MonoZ/data/TriggerSFs/trigger-2017.root" % os.environ['CMSSW_BASE']
+TrigSF_2017 = "%s/src/PhysicsTools/MonoZ/data/TriggerSFs/trigger-2017-miniISO.root" % os.environ['CMSSW_BASE']
 TriggerSF_2017 = lambda syst : TriggerSFProducerForHH(TrigSF_2017,verbose=False, doSysVar=True, syst_var=syst)
 
-TrigSF_2018 = "%s/src/PhysicsTools/MonoZ/data/TriggerSFs/trigger-2018.root" % os.environ['CMSSW_BASE']
+TrigSF_2018 = "%s/src/PhysicsTools/MonoZ/data/TriggerSFs/trigger-2018-miniISO.root" % os.environ['CMSSW_BASE']
 TriggerSF_2018 = lambda syst : TriggerSFProducerForHH(TrigSF_2018,verbose=False, doSysVar=True, syst_var=syst)
 

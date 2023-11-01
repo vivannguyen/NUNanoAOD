@@ -14,6 +14,38 @@ DYToLL_2J_13TeV-amcatnloFXFX-pythia8:
     br: 1
     kr: 1
     xsec: 339.6296
+DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 967.7
+DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 362.2
+DYJetsToLL_Zpt-0To50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 5352.579
+DYJetsToLL_Pt-50To100_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 363.814
+DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 84.015
+DYJetsToLL_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 3.228
+DYJetsToLL_Pt-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 0.436
+DYJetsToLL_Pt-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 0.041
 WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8:
     br: 1
     kr: 1
@@ -178,6 +210,30 @@ WToLNu_2J_13TeV-amcatnloFXFX-pythia8:
     br: 1
     kr: 1
     xsec: 2813.243
+WJetsToLNu_Wpt-0To50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 57297.3926
+WJetsToLNu_Wpt-50To100_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 3298.3733
+WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 689.7496
+WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 24.5069
+WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 3.110131
+WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8:
+    br: 1
+    kr: 1
+    xsec: 0.468318
 ggZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8:
     br: 1
     kr: 1
@@ -491,6 +547,10 @@ VBFHHTo2B2ZTo2L2J_CV_1_C2V_1_C3_0_dipoleRecoilOff-TuneCUETP8M1_PSweights_13TeV-m
     kr: 1
     xsec: 1
 VBFHHTo2B2ZTo2L2J_CV_1_5_C2V_1_C3_1_dipoleRecoilOff-TuneCUETP8M1_PSweights_13TeV-madgraph-pythia8:
+    br: 1
+    kr: 1
+    xsec: 1
+VBFHHTo2B2ZTo2L2J_CV_0_5_C2V_1_C3_1_dipoleRecoilOff-TuneCUETP8M1_PSweights_13TeV-madgraph-pythia8:
     br: 1
     kr: 1
     xsec: 1

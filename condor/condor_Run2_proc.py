@@ -28,7 +28,8 @@ from PhysicsTools.MonoZ.PhiXYCorrection import *
 from PhysicsTools.MonoZ.BtagEventWeightProducer import *
 from PhysicsTools.MonoZ.TriggerSFProducerForHH import *
 from PhysicsTools.MonoZ.AngularVariablesProducerForHH import *
-from PhysicsTools.MonoZ.BDTdiscriminantProducerForHH import *
+#from PhysicsTools.MonoZ.BDTdiscriminantProducerForHH import *
+from PhysicsTools.MonoZ.StoreEventsProducerForHH import *
 #from PhysicsTools.MonoZ.GenMonoZProducer import *
 import argparse
 
@@ -37,6 +38,7 @@ parser.add_argument('-isMC'   , '--isMC'   , type=int, default=1     , help="")
 parser.add_argument('-jobNum' , '--jobNum' , type=int, default=1     , help="")
 parser.add_argument('-era'    , '--era'    , type=str, default="2018", help="")
 parser.add_argument('-doSyst' , '--doSyst' , type=int, default=1     , help="")
+parser.add_argument('-signal' , '--signal' , type=str, default='GF'  , help="")
 parser.add_argument('-infile' , '--infile' , type=str, default=None  , help="")
 parser.add_argument('-dataset', '--dataset', type=str, default="X"   , help="")
 parser.add_argument('-nevt'   , '--nevt'   , type=str, default=-1    , help="")
@@ -131,7 +133,15 @@ if options.isMC:
    except:
        print("WARNING: I did not find the xsection for that MC sample. Check the dataset name and the relevant yaml file")
 
-pre_selection = "(Sum$(Electron_pt>10 && abs(Electron_eta)<2.5) >= 2 || Sum$(Muon_pt>8 && abs(Muon_eta)<2.5) >= 2 ) && Sum$(Jet_pt>15 && abs(Jet_eta) < 2.4 )>= 4 "
+# for VBF
+if options.signal=='VBF':
+    pre_selection = "(Sum$(Electron_pt>10 && abs(Electron_eta)<2.5) >= 2 || Sum$(Muon_pt>8 && abs(Muon_eta)<2.5) >= 2 ) && Sum$(Jet_pt>15)>= 4 "
+# for EMU control region
+elif options.signal=='EMU':
+    pre_selection = "(Sum$(Electron_pt>10 && abs(Electron_eta)<2.5) >= 1 || Sum$(Muon_pt>8 && abs(Muon_eta)<2.5) >= 1 ) && Sum$(Jet_pt>15)>= 4 "
+# for GF
+else:
+    pre_selection = "(Sum$(Electron_pt>10 && abs(Electron_eta)<2.5) >= 2 || Sum$(Muon_pt>8 && abs(Muon_eta)<2.5) >= 2 ) && Sum$(Jet_pt>15 && abs(Jet_eta) < 2.4 )>= 4 "
 pre_selection += "&& Flag_METFilters"
 
 if float(options.nevt) > 0:
@@ -152,7 +162,7 @@ else:
 
 # modules_era = [ GenWeightProducer( isMC = options.isMC, xsec = xsection, dopdf =  True) ]
 
-pro_syst = [ "ElectronEn", "MuonEn", "jer"]
+pro_syst = [ "ElectronEn", "MuonEn", "jer", "UnclusteredEn", "bRegScale", "bRegSmear"]
 ext_syst = [ "puWeight", "PDF", "MuonSF", "ElecronSF","TriggerSFWeight","btagEventWeight", "QCDScale0w", "QCDScale1w", "QCDScale2w"]
 
 jetmetCorrector = createJMECorrector(isMC = options.isMC, dataYear = options.era, runPeriod= runperiod_ , jesUncert="Merged", metBranchName=metBranchName) # add METfixEE2017
@@ -174,6 +184,7 @@ if options.isMC:
       combineHLT = yaml.safe_load(open("combineHLT_Run2.yaml"))
    except yaml.YAMLError as exc:
       print(exc)
+
    if options.era=="2016":
       pre_selection = pre_selection + " && (" + combineHLT.get("Run2016.MC", "") + ")"
    if options.era=="2017":
@@ -208,27 +219,19 @@ if options.isMC:
       # modules_era.append(nvtxWeight_2018())
 
    # modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=''))
-   modules_era.append(DiHiggsProducer(isMC=options.isMC, era=str(options.era), do_syst=0, syst_var=''))
+   modules_era.append(DiHiggsProducer(isMC=options.isMC, era=str(options.era), do_syst=0, signal=options.signal, syst_var=''))
 
-   modules_era.append(AngularVariablesProducerForHH())
-#   modules_era.append(GenTopProducer())
-#   modules_era.append(BDTdiscriminantProducerForHH(era=str(options.era), do_syst=0, syst_var=''))
+   modules_era.append(AngularVariablesProducerForHH(signal=options.signal))
+
+   if "TTTo2L2Nu" in options.dataset or "TTToHadronic" in options.dataset or "TTToSemiLeptonic" in options.dataset or "TTJets" in options.dataset or "TT_" in options.dataset:
+      modules_era.append(GenTopProducer())
+
    if options.era=="2016":
-
       modules_era.append(TriggerSF_2016(syst=''))
    if options.era=="2017":
       modules_era.append(TriggerSF_2017(syst=''))
    if options.era=="2018":
       modules_era.append(TriggerSF_2018(syst=''))
-
-
-
-   # modules_era.append(GenMonoZProducer())
-   # WZ or ZZ sample for ewk corrections and ADD for EFT weights
-   # if "ZZTo" in options.dataset and "GluGluToContin" not in options.dataset:
-      # modules_era.append(EWProducer(1, True))
-   # if "WZTo" in options.dataset:
-      # modules_era.append(EWProducer(2, False))
 
 
 
@@ -238,8 +241,8 @@ if options.isMC:
          for var in ["Up", "Down"]:
 	    # if "jesTotal" in sys and options.doSyst==1: modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=sys+var))
 	    # if "jer" in sys and options.doSyst==1: modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=sys+var))
-            modules_era.append(DiHiggsProducer(options.isMC, str(options.era), do_syst=options.doSyst, syst_var=sys+var))
-            modules_era.append(AngularVariablesProducerForHH(do_syst=options.doSyst, syst_var=sys+var))
+            modules_era.append(DiHiggsProducer(options.isMC, str(options.era), do_syst=options.doSyst, signal=options.signal, syst_var=sys+var))
+            modules_era.append(AngularVariablesProducerForHH(do_syst=options.doSyst, signal=options.signal, syst_var=sys+var))
 
             if options.era=="2016":
                modules_era.append(TriggerSF_2016(syst=sys+var))
@@ -248,6 +251,7 @@ if options.isMC:
             if options.era=="2018":
                modules_era.append(TriggerSF_2018(syst=sys+var))
 #            modules_era.append(BDTdiscriminantProducerForHH(era=str(options.era), do_syst=options.doSyst, syst_var=sys+var))
+   modules_era.append(StoreEventsProducerForHH(str(options.era),options.doSyst))
 
 else:
    if options.era=="2016":
@@ -307,8 +311,8 @@ else:
 #      modules_era.append(getattr(jetRecalib, 'jetRecalib2018%s' % condtag_.split(options.era)[1][:1])() )
 
 #   modules_era.append(PhiXYCorrection(era=options.era,isMC=options.isMC,sys=''))
-   modules_era.append(DiHiggsProducer  (isMC=options.isMC, era=str(options.era), do_syst=0, syst_var=''))
-   modules_era.append(AngularVariablesProducerForHH())
+   modules_era.append(DiHiggsProducer  (isMC=options.isMC, era=str(options.era), do_syst=0, signal=options.signal, syst_var=''))
+   modules_era.append(AngularVariablesProducerForHH(signal=options.signal))
    if options.era=="2016":
        options.json = "Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt"
    if options.era=="2017":
