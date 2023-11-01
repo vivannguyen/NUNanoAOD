@@ -37,7 +37,7 @@ parser = argparse.ArgumentParser("")
 parser.add_argument('-isMC'   , '--isMC'   , type=int, default=1     , help="")
 parser.add_argument('-jobNum' , '--jobNum' , type=int, default=1     , help="")
 parser.add_argument('-era'    , '--era'    , type=str, default="2018", help="")
-parser.add_argument('-doSyst' , '--doSyst' , type=int, default=0     , help="")
+parser.add_argument('-doSyst' , '--doSyst' , type=int, default=1     , help="")
 parser.add_argument('-signal' , '--signal' , type=str, default='GF'  , help="")
 parser.add_argument('-infile' , '--infile' , type=str, default=None  , help="")
 parser.add_argument('-dataset', '--dataset', type=str, default="X"   , help="")
@@ -120,8 +120,8 @@ dataset = options.dataset
 #condtag_ = "SUEP_QCD"
 
 if options.isMC:
-   with open(os.path.dirname(__file__) +'../data/xsections_{}.yaml'.format(options.era)) as file:
-#   with open(os.path.dirname(__file__) +'xsections_{}.yaml'.format(options.era)) as file:
+#   with open(os.path.dirname(__file__) +'../data/xsections_{}.yaml'.format(options.era)) as file:
+   with open(os.path.dirname(__file__) +'xsections_{}.yaml'.format(options.era)) as file:
        #MC_xsecs = yaml.full_load(file)
        MC_xsecs = yaml.safe_load(file)
    try:

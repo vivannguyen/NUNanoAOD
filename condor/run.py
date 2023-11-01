@@ -30,7 +30,7 @@ echo "+ CMSSW_BASE  = $CMSSW_BASE"
 echo "+ PYTHON_PATH = $PYTHON_PATH"
 echo "+ PWD         = $PWD"
 echo "----- Found Proxy in: $X509_USER_PROXY"
-python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://cmsxrootd.fnal.gov/$2
+python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --signal={signal} --infile=root://xrootd-cms.infn.it/$2
 echo "----- transfert output to eos :"
 xrdcp -s -f tree_$1.root {eosdir}
 echo "----- directory after running :"
@@ -68,6 +68,7 @@ queue jobid from {jobdir}/inputfiles.dat
 
 # Additional TEMPLATE options
 #python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://xrootd-cms.infn.it/$2
+#python condor_Run2_proc.py --jobNum=$1 --isMC={ismc} --era={era} --infile=root://cmsxrootd.fnal.gov/$2
 #request_memory          = 15000
 
 def main():
@@ -77,6 +78,7 @@ def main():
     parser.add_argument("-isMC", "--isMC"  , type=int, default=1          , help="")
     parser.add_argument("-q"   , "--queue" , type=str, default="tomorrow", help="")
     parser.add_argument("-e"   , "--era"   , type=str, default="2017"     , help="")
+    parser.add_argument("-si"   , "--signal"   , type=str, default="GF"     , help="")
     parser.add_argument("-f"   , "--force" , action="store_true"          , help="recreate files and jobs")
     parser.add_argument("-s"   , "--submit", action="store_true"          , help="submit only")
     parser.add_argument("-dry" , "--dryrun", action="store_true"          , help="running without submission")
@@ -203,6 +205,7 @@ def main():
                 cmssw_base=cmssw_base,
                 ismc=options.isMC,
                 era=options.era,
+                signal=options.signal,
                 eosdir=eosoutdir
             )
             scriptfile.write(script)

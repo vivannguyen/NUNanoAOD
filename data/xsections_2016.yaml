@@ -550,6 +550,10 @@ VBFHHTo2B2ZTo2L2J_CV_1_5_C2V_1_C3_1_dipoleRecoilOff-TuneCUETP8M1_PSweights_13TeV
     br: 1
     kr: 1
     xsec: 1
+VBFHHTo2B2ZTo2L2J_CV_0_5_C2V_1_C3_1_dipoleRecoilOff-TuneCUETP8M1_PSweights_13TeV-madgraph-pythia8:
+    br: 1
+    kr: 1
+    xsec: 1
 GluGluToHHTo2B2ZTo2L2J_node_cHHH0_TuneCUETP8M1_PSWeights_13TeV-powheg-pythia8:
     br: 1
     kr: 1
